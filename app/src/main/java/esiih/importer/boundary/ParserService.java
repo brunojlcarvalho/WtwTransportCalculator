@@ -1,5 +1,6 @@
 package esiih.importer.boundary;
 
+import esiih.importer.entity.ParsedPrimaryData;
 import esiih.importer.entity.ParsedSecondaryData;
 import esiih.importer.exception.InvalidDataException;
 
@@ -9,4 +10,6 @@ import esiih.importer.exception.InvalidDataException;
 public interface ParserService {
 
     public ParsedSecondaryData parseSecondaryData(String filePath) throws InvalidDataException;
+    public ParsedPrimaryData parsePrimaryData(String filePath) throws InvalidDataException;
+
 }
