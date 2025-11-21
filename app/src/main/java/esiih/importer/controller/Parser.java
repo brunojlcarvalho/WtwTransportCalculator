@@ -5,9 +5,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import esiih.importer.boundary.ParserService;
+import esiih.importer.entity.ParsedPrimaryData;
 import esiih.importer.entity.ParsedSecondaryData;
 import esiih.importer.exception.InvalidDataException;
 
@@ -17,7 +21,9 @@ import esiih.importer.exception.InvalidDataException;
 public class Parser implements ParserService {
 
     private static final int MAX_LINES = 1000;
+    private static final int MAX_LINES_PRIMARY = 50;
     private ParsedSecondaryData parsedSecondaryData;
+    private ParsedPrimaryData parsedPrimaryData;
 
     /**
      * Parses the Secondary Data CSV file.
@@ -139,6 +145,61 @@ public class Parser implements ParserService {
         return parsedSecondaryData;
     }
 
+    @Override
+    public ParsedPrimaryData parsePrimaryData(String filePath) throws InvalidDataException {
+
+        if (filePath == null || filePath.isBlank()) {
+            throw new InvalidDataException("The file path is invalid or empty.");
+        }
+
+        if (!filePath.toLowerCase().endsWith(".csv")) {
+            throw new InvalidDataException("Invalid file type. Only .csv files are accepted.");
+        }
+
+        String data;
+        try {
+            data = readFile(filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new InvalidDataException("Error reading the file.", e);
+        }
+
+        // 2) Empty file
+        if (data.trim().isEmpty()) {
+            throw new InvalidDataException("The file is empty.");
+        }
+
+        // 3) Validate headers
+        String[] lines = data.split("\n");
+        if (lines.length > MAX_LINES_PRIMARY) {
+            throw new InvalidDataException("CSV file is too large.");
+        }
+
+        String header = lines[0];
+        String[] headerParts = header.split(";");
+
+        if (!isValidPrimaryDataHeaders(headerParts)) {
+            throw new InvalidDataException("Incomplete or invalid headers.");
+        }
+
+        // 4) Validate data lines
+        for (int i = 1; i < lines.length; i++) {
+            String line = lines[i];
+
+            if (!Pattern.matches("[\\w\\s;,.%()/·+\\u00C0-\\u00FF-]+", line)) {
+                throw new InvalidDataException("The file contains invalid characters.");
+            }
+
+            if (!line.contains(";")) {
+                throw new InvalidDataException("Missing semicolon ';' between the data.");
+            }
+        }
+
+        parsedPrimaryData = new ParsedPrimaryData();
+        parsedPrimaryData.setPrimaryDataString(data);
+        return parsedPrimaryData;
+    }
+
     /**
      * Reads the file using UTF-8 encoding.
      *
@@ -171,6 +232,31 @@ public class Parser implements ParserService {
                 "Mode", "Fuel_Type", "Payload_t", "Empty_km_pct", "Activity_Unit",
                 "WTT_Emissions_kg_per_tkm", "TTW_Emissions_kg_per_tkm",
                 "Total_Emissions_kg_per_tkm", "Average (liters / 100 tkm)"
+        };
+
+        if (headers.length != expectedHeaders.length) {
+            return false;
+        }
+        for (int i = 0; i < headers.length; i++) {
+            if (!headers[i].trim().equalsIgnoreCase(expectedHeaders[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Checks if the headers are valid for Primary Data.
+     *
+     * @param headers the headers
+     * @return true if the headers are valid, false otherwise
+     */
+    private boolean isValidPrimaryDataHeaders(String[] headers) {
+        String[] expectedHeaders = {
+                "Etapa","Tipo Operacao","Veiculo Transporte","Modo Transaporte",
+                "Distancia Carregado (km)","Distancia Vazio (km)","Carga Transportada (t)",
+                "Carga Maxima (t)","Tipo Combustivel","Tempo (h)","Litros Consumidos (l)",
+                "Consumos (l/100tkm)","Energia(kWh)"
         };
 
         if (headers.length != expectedHeaders.length) {
