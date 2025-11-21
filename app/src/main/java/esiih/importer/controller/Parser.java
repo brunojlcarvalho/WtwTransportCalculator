@@ -5,9 +5,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import esiih.importer.boundary.ParserService;
@@ -16,7 +13,7 @@ import esiih.importer.entity.ParsedSecondaryData;
 import esiih.importer.exception.InvalidDataException;
 
 /**
- * Parser class to parse CSV files for Secondary Data.
+ * Parser class to parse CSV files.
  */
 public class Parser implements ParserService {
 
@@ -56,7 +53,6 @@ public class Parser implements ParserService {
 
         boolean isFirstLine = true;
 
-        // Variáveis para armazenar os índices dinamicamente
         int payloadIndex = -1;
         int emptyKmIndex = -1;
         int wttIndex = -1;
@@ -65,7 +61,6 @@ public class Parser implements ParserService {
         int averageIndex = -1;
 
         for (String line : lines) {
-            // Validações estruturais
             if (line.contains("  ")) {
                 throw new InvalidDataException("CSV file has inconsistent spacing.");
             }
@@ -80,26 +75,25 @@ public class Parser implements ParserService {
 
             String[] fields = line.split(";");
 
-            if (!Pattern.matches("[\\w\\s;,.%()/·+\\u00C0-\\u00FF-]+", line)) {
+            if (!Pattern.matches("[\\w\\s;./Â·+\\u00C0-\\u00FF-]+", line)) {
                 throw new InvalidDataException("CSV file contains invalid characters in line: " + line);
             }
 
             if (isFirstLine) {
-                // Identificação dinâmica das colunas
                 for (int i = 0; i < fields.length; i++) {
                     String header = fields[i].trim();
 
-                    if (header.equalsIgnoreCase("Payload_t")) {
+                    if (header.equalsIgnoreCase("PayloadT")) {
                         payloadIndex = i;
-                    } else if (header.equalsIgnoreCase("Empty_km_pct")) {
+                    } else if (header.equalsIgnoreCase("EmptyKmPct")) {
                         emptyKmIndex = i;
-                    } else if (header.equalsIgnoreCase("WTT_Emissions_kg_per_tkm")) {
+                    } else if (header.equalsIgnoreCase("WttEmissionsKgPerTkm")) {
                         wttIndex = i;
-                    } else if (header.equalsIgnoreCase("TTW_Emissions_kg_per_tkm")) {
+                    } else if (header.equalsIgnoreCase("TtwEmissionsKgPerTkm")) {
                         ttwIndex = i;
-                    } else if (header.equalsIgnoreCase("Total_Emissions_kg_per_tkm")) {
+                    } else if (header.equalsIgnoreCase("TotalEmissionsKgPerTkm")) {
                         totalIndex = i;
-                    } else if (header.equalsIgnoreCase("Average (liters / 100 tkm)")) {
+                    } else if (header.equalsIgnoreCase("AverageLitersPer100Tkm")) {
                         averageIndex = i;
                     }
                 }
@@ -111,15 +105,12 @@ public class Parser implements ParserService {
                 continue;
             }
 
-            // Validação numérica
             for (int i = 0; i < fields.length; i++) {
                 String field = fields[i];
 
                 if (i == payloadIndex || i == emptyKmIndex || i == wttIndex ||
                         i == ttwIndex || i == totalIndex || i == averageIndex) {
 
-                    // NOVO: Permite campos vazios nas colunas numéricas (ex: Payload vazio para
-                    // navios)
                     if (field.trim().isEmpty()) {
                         continue;
                     }
@@ -128,13 +119,8 @@ public class Parser implements ParserService {
                         throw new InvalidDataException("CSV file contains letters in numeric fields: " + field);
                     }
 
-                    try {
-                        double value = Double.parseDouble(field.replace(",", "."));
-                        if (value < 0) {
-                            throw new InvalidDataException("CSV file contains numeric fields with negative values.");
-                        }
-                    } catch (NumberFormatException e) {
-                        throw new InvalidDataException("Invalid number format in numeric field: " + field);
+                    if (field.matches("-?\\d*\\.?\\d+") && Double.parseDouble(field) < 0) {
+                        throw new InvalidDataException("CSV file contains numeric fields with negative values.");
                     }
                 }
             }
@@ -164,12 +150,10 @@ public class Parser implements ParserService {
             throw new InvalidDataException("Error reading the file.", e);
         }
 
-        // 2) Empty file
         if (data.trim().isEmpty()) {
             throw new InvalidDataException("The file is empty.");
         }
 
-        // 3) Validate headers
         String[] lines = data.split("\n");
         if (lines.length > MAX_LINES_PRIMARY) {
             throw new InvalidDataException("CSV file is too large.");
@@ -182,7 +166,6 @@ public class Parser implements ParserService {
             throw new InvalidDataException("Incomplete or invalid headers.");
         }
 
-        // 4) Validate data lines
         for (int i = 1; i < lines.length; i++) {
             String line = lines[i];
 
@@ -229,9 +212,15 @@ public class Parser implements ParserService {
      */
     private boolean isValidSecondaryDataHeaders(String[] headers) {
         String[] expectedHeaders = {
-                "Mode", "Fuel_Type", "Payload_t", "Empty_km_pct", "Activity_Unit",
-                "WTT_Emissions_kg_per_tkm", "TTW_Emissions_kg_per_tkm",
-                "Total_Emissions_kg_per_tkm", "Average (liters / 100 tkm)"
+                "Mode",
+                "FuelType",
+                "PayloadT",
+                "EmptyKmPct",
+                "ActivityUnit",
+                "WttEmissionsKgPerTkm",
+                "TtwEmissionsKgPerTkm",
+                "TotalEmissionsKgPerTkm",
+                "AverageLitersPer100Tkm"
         };
 
         if (headers.length != expectedHeaders.length) {
@@ -253,10 +242,10 @@ public class Parser implements ParserService {
      */
     private boolean isValidPrimaryDataHeaders(String[] headers) {
         String[] expectedHeaders = {
-                "Etapa","Tipo Operacao","Veiculo Transporte","Modo Transaporte",
-                "Distancia Carregado (km)","Distancia Vazio (km)","Carga Transportada (t)",
-                "Carga Maxima (t)","Tipo Combustivel","Tempo (h)","Litros Consumidos (l)",
-                "Consumos (l/100tkm)","Energia(kWh)"
+                "Etapa", "Tipo Operacao", "Veiculo Transporte", "Modo Transaporte",
+                "Distancia Carregado (km)", "Distancia Vazio (km)", "Carga Transportada (t)",
+                "Carga Maxima (t)", "Tipo Combustivel", "Tempo (h)", "Litros Consumidos (l)",
+                "Consumos (l/100tkm)", "Energia(kWh)"
         };
 
         if (headers.length != expectedHeaders.length) {
