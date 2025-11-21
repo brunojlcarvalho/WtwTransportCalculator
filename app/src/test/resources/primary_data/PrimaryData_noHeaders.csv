@@ -1,0 +1,12 @@
+;;;;;;;;;;;;;
+1;TO;Aviao cargueiro;Ar;15 000;15 000;8;28;Jet kerosene;;;;;
+2;HO;Descarregar Aviao e Carregar Camiao;;;;8;;electricity;1;;;100;
+3;TO;Camiao;Estrada;800;800;10;20;Diesel;;;3,5;;
+4;HO;Descarregar Camiao;;;;10;;electricity;1;;;100;
+5;TO;Camiao;Estrada;50;50;15;20;Diesel;;;3,5;;
+6;HO;Carregar Comboio;;;;15;;electricity;1;;;100;
+7;TO;Comboio de mercadorias;Via-ferrea;1 200;1 200;15;26;Eletrico;;;;;
+8;HO;Carregar Navio;;;;15;;electricity;1;;;100;
+9;TO;Navio contentores;Mar;8 000;8 000;15;24;HFO;;;;;
+10;HO;Carregar Camiao;;;;15;;electricity;1;;;100;
+11;TO;Camiao;Estrada;600;600;15;20;Diesel;;;3,5;;
