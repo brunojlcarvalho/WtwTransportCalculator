@@ -45,7 +45,7 @@ public class Modeler implements ModelerService {
                 continue;
             }
 
-            String[] values = line.split(";");
+            String[] values = line.split(";", -1);
 
             String id = values[0];
             String type = values[1];
@@ -76,7 +76,7 @@ public class Modeler implements ModelerService {
                     throw new InvalidParsePrimaryDataException("Error parse distance loaded value.");
                 }
 
-                if (distLoaded <= 0 || distLoaded > 20000)
+                if (distLoaded != 0.0 && distLoaded <= 0 || distLoaded > 20000)
                     throw new InvalidParsePrimaryDataException("Invalid distance loaded value.");
 
                 double distEmpty;
@@ -86,7 +86,7 @@ public class Modeler implements ModelerService {
                     throw new InvalidParsePrimaryDataException("Error parse distance empty value.");
                 }
 
-                if (distEmpty <= 0 || distEmpty > 20000)
+                if (distEmpty != 0.0 && distEmpty < 0 || distEmpty > 20000)
                     throw new InvalidParsePrimaryDataException("Invalid empty distance value.");
 
                 double payload;
@@ -96,7 +96,7 @@ public class Modeler implements ModelerService {
                     throw new InvalidParsePrimaryDataException("Error parse payload value.");
                 }
 
-                if (payload <= 0 || payload > 28)
+                if (payload != 0.0 && payload <= 0 || payload > 28)
                     throw new InvalidParsePrimaryDataException("Invalid payload value.");
 
                 double maxPayload;
@@ -106,7 +106,7 @@ public class Modeler implements ModelerService {
                     throw new InvalidParsePrimaryDataException("Error parse payload value.");
                 }
 
-                if (maxPayload <= 0 || maxPayload > 28)
+                if (maxPayload != 0.0 && maxPayload <= 0 || maxPayload > 28)
                     throw new InvalidParsePrimaryDataException("Invalid payload value.");
 
                 FuelType fuel;
@@ -117,27 +117,27 @@ public class Modeler implements ModelerService {
                 }
 
                 if (fuel == FuelType.UNKNOWN)
-                    throw new InvalidParsePrimaryDataException("Invalid mode in CSV file");
+                    throw new InvalidParsePrimaryDataException("Invalid fuel mode in CSV file");
 
                 double litersConsumed;
                 try {
                     litersConsumed = parseDouble(values[10]);
                 } catch (NumberFormatException e) {
-                    throw new InvalidParsePrimaryDataException("Error parse payload value.");
+                    throw new InvalidParsePrimaryDataException("Error parse liters Consumed value.");
                 }
 
-                if (litersConsumed <= 0 || litersConsumed > 10000000)
-                    throw new InvalidParsePrimaryDataException("Invalid payload value.");
+                if (litersConsumed != 0.0 && litersConsumed < 0 || litersConsumed > 10000000)
+                    throw new InvalidParsePrimaryDataException("Invalid liters Consumed value.");
 
                 double consumptionLitTKm;
                 try {
                     consumptionLitTKm = parseDouble(values[11]);
                 } catch (NumberFormatException e) {
-                    throw new InvalidParsePrimaryDataException("Error parse payload value.");
+                    throw new InvalidParsePrimaryDataException("Error parse consumption liters value.");
                 }
 
-                if (consumptionLitTKm <= 0 || consumptionLitTKm > 100)
-                    throw new InvalidParsePrimaryDataException("Invalid payload value.");
+                if (consumptionLitTKm != 0.0 && consumptionLitTKm <= 0 || consumptionLitTKm > 100)
+                    throw new InvalidParsePrimaryDataException("Invalid consumption liters value.");
 
                 TransportOperation to = new TransportOperation(id);
                 to.setTransportMode(mode);
@@ -159,7 +159,7 @@ public class Modeler implements ModelerService {
                     throw new InvalidParsePrimaryDataException("Error parse duration value.");
                 }
 
-                if (duration <= 0 || duration > 2000)
+                if (duration != 0.0 && duration <= 0 || duration > 2000)
                     throw new InvalidParsePrimaryDataException("Invalid duration value.");
 
                 double energy;
@@ -169,7 +169,7 @@ public class Modeler implements ModelerService {
                     throw new InvalidParsePrimaryDataException("Error parse energy value.");
                 }
 
-                if (energy <= 0 || energy > 100000)
+                if (energy != 0.0 && energy <= 0 || energy > 100000)
                     throw new InvalidParsePrimaryDataException("Invalid energy value.");
 
                 FuelType energySource;
