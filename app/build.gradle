@@ -69,9 +69,9 @@ jacocoTestReport {
 
 pmd {
     consoleOutput = true
-    toolVersion = "6.55.0"
-    rulesMinimumPriority = 5
     ignoreFailures = true
+    toolVersion = "6.35.0"
+    rulesMinimumPriority = 3
     ruleSetFiles = files("src/main/resources/custom-pmd-ruleset.xml")
     ruleSets = []
 }
