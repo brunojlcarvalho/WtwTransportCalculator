@@ -21,6 +21,7 @@ import esiih.importer.exception.InvalidDataException;
 public class Parser implements ParserService {
 
     private static final int MAX_LINES = 1000;
+    private static final int MAX_LINES_PRIMARY = 50;
     private ParsedSecondaryData parsedSecondaryData;
     private ParsedPrimaryData parsedPrimaryData;
 
@@ -158,7 +159,6 @@ public class Parser implements ParserService {
         String data;
         try {
             data = readFile(filePath);
-            //lines = Files.readAllLines(Paths.get(filePath), StandardCharsets.ISO_8859_1);
         } catch (IOException e) {
             e.printStackTrace();
             throw new InvalidDataException("Error reading the file.", e);
@@ -171,6 +171,10 @@ public class Parser implements ParserService {
 
         // 3) Validate headers
         String[] lines = data.split("\n");
+        if (lines.length > MAX_LINES_PRIMARY) {
+            throw new InvalidDataException("CSV file is too large.");
+        }
+
         String header = lines[0];
         String[] headerParts = header.split(";");
 

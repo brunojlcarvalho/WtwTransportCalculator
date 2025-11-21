@@ -112,6 +112,21 @@ public class TestParserService {
     }
 
     /**
+     * Ensures that an CSV file with more than 50 lines throws an InvalidDataException.
+     */
+    @Test
+    void csvFileWithMoreThanMaxLines_throwsInvalidDataException() {
+        String filePath = PRIMARY_BASE + "PrimaryData_51Lines.csv";
+
+        InvalidDataException ex = assertThrows(
+                InvalidDataException.class,
+                () -> parserService.parsePrimaryData(filePath)
+        );
+
+        assertEquals("CSV file is too large.", ex.getMessage());
+    }
+
+    /**
      * Ensures that an CSV file with invalid Chars throws an InvalidDataException.
      */
     @Test
