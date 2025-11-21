@@ -14,6 +14,9 @@ public class TransportOperation extends TransportChainElement {
     private double distanceLoadedKm;
     private double distanceEmptyKm;
     private double payloadTon;
+    private double maxCapacityTon;
+    private double litersConsumed;
+    private double consumptionLitTKm;
     private FuelType fuelType;
 
     /**
@@ -114,5 +117,29 @@ public class TransportOperation extends TransportChainElement {
      */
     public double getTotalDistance() {
         return distanceLoadedKm + distanceEmptyKm;
+    }
+
+    public double getMaxCapacityTon() {
+        return maxCapacityTon;
+    }
+
+    public void setMaxCapacityTon(double maxPayloadTon) {
+        this.maxCapacityTon = maxPayloadTon;
+    }
+
+    public double getLitersConsumed() {
+        return litersConsumed;
+    }
+
+    public void setLitersConsumed(double litersConsumed) {
+        this.litersConsumed = litersConsumed;
+    }
+
+    public double getconsumptionLitTKm() {
+        return consumptionLitTKm;
+    }
+
+    public void setconsumptionLitTKm(double consumptionLitTonKm) {
+        this.consumptionLitTKm = consumptionLitTonKm;
     }
 }

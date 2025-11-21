@@ -53,40 +53,91 @@ public class Modeler implements ModelerService {
             if ("TO".equalsIgnoreCase(type)) {
                 String vehicleType = values[2];
 
+                if (vehicleType == null || vehicleType.isEmpty())
+                    throw new InvalidParsePrimaryDataException("Vehicle type is null or empty");
+
+                if (vehicleType.length() < 0 || vehicleType.length() > 20)
+                    throw new InvalidParsePrimaryDataException("Vehicle type length must be between 0 and 20");
+
                 Mode mode;
                 try {
                     mode = Mode.fromString(values[3]);
                 } catch (IllegalArgumentException e) {
-                    throw new InvalidParsePrimaryDataException("Invalid mode value in row " + i + ": " + values[3]);
+                    throw new InvalidParsePrimaryDataException("It's not possible read the mode.");
                 }
+
+                if (mode == Mode.UNKNOWN)
+                    throw new InvalidParsePrimaryDataException("Invalid mode in CSV file");
 
                 double distLoaded;
                 try {
                     distLoaded = parseDouble(values[4]);
                 } catch (NumberFormatException e) {
-                    throw new InvalidParsePrimaryDataException("Invalid distance loaded value in row " + i);
+                    throw new InvalidParsePrimaryDataException("Error parse distance loaded value.");
                 }
+
+                if (distLoaded <= 0 || distLoaded > 20000)
+                    throw new InvalidParsePrimaryDataException("Invalid distance loaded value.");
 
                 double distEmpty;
                 try {
                     distEmpty = parseDouble(values[5]);
                 } catch (NumberFormatException e) {
-                    throw new InvalidParsePrimaryDataException("Invalid distance empty value in row " + i);
+                    throw new InvalidParsePrimaryDataException("Error parse distance empty value.");
                 }
+
+                if (distEmpty <= 0 || distEmpty > 20000)
+                    throw new InvalidParsePrimaryDataException("Invalid empty distance value.");
 
                 double payload;
                 try {
                     payload = parseDouble(values[6]);
                 } catch (NumberFormatException e) {
-                    throw new InvalidParsePrimaryDataException("Invalid payload value in row " + i);
+                    throw new InvalidParsePrimaryDataException("Error parse payload value.");
                 }
+
+                if (payload <= 0 || payload > 28)
+                    throw new InvalidParsePrimaryDataException("Invalid payload value.");
+
+                double maxPayload;
+                try {
+                    maxPayload = parseDouble(values[7]);
+                } catch (NumberFormatException e) {
+                    throw new InvalidParsePrimaryDataException("Error parse payload value.");
+                }
+
+                if (maxPayload <= 0 || maxPayload > 28)
+                    throw new InvalidParsePrimaryDataException("Invalid payload value.");
 
                 FuelType fuel;
                 try {
                     fuel = FuelType.fromString(values[8]);
                 } catch (IllegalArgumentException e) {
-                    throw new InvalidParsePrimaryDataException("Invalid fuel value in row " + i + ": " + values[8]);
+                    throw new InvalidParsePrimaryDataException("Error parse fuel value.");
                 }
+
+                if (fuel == FuelType.UNKNOWN)
+                    throw new InvalidParsePrimaryDataException("Invalid mode in CSV file");
+
+                double litersConsumed;
+                try {
+                    litersConsumed = parseDouble(values[10]);
+                } catch (NumberFormatException e) {
+                    throw new InvalidParsePrimaryDataException("Error parse payload value.");
+                }
+
+                if (litersConsumed <= 0 || litersConsumed > 10000000)
+                    throw new InvalidParsePrimaryDataException("Invalid payload value.");
+
+                double consumptionLitTKm;
+                try {
+                    consumptionLitTKm = parseDouble(values[11]);
+                } catch (NumberFormatException e) {
+                    throw new InvalidParsePrimaryDataException("Error parse payload value.");
+                }
+
+                if (consumptionLitTKm <= 0 || consumptionLitTKm > 100)
+                    throw new InvalidParsePrimaryDataException("Invalid payload value.");
 
                 TransportOperation to = new TransportOperation(id);
                 to.setTransportMode(mode);
@@ -94,6 +145,7 @@ public class Modeler implements ModelerService {
                 to.setDistanceLoadedKm(distLoaded);
                 to.setDistanceEmptyKm(distEmpty);
                 to.setPayloadTon(payload);
+                to.setMaxCapacityTon(maxPayload);
                 to.setFuelType(fuel);
 
                 transportChain.addElement(to);
@@ -104,22 +156,31 @@ public class Modeler implements ModelerService {
                 try {
                     duration = (values.length > 9) ? parseDouble(values[9]) : 0.0;
                 } catch (NumberFormatException e) {
-                    throw new InvalidParsePrimaryDataException("Invalid duration value in row " + i);
+                    throw new InvalidParsePrimaryDataException("Error parse duration value.");
                 }
+
+                if (duration <= 0 || duration > 2000)
+                    throw new InvalidParsePrimaryDataException("Invalid duration value.");
 
                 double energy;
                 try {
                     energy = (values.length > 12) ? parseDouble(values[12]) : 0.0;
                 } catch (NumberFormatException e) {
-                    throw new InvalidParsePrimaryDataException("Invalid energy value in row " + i);
+                    throw new InvalidParsePrimaryDataException("Error parse energy value.");
                 }
+
+                if (energy <= 0 || energy > 100000)
+                    throw new InvalidParsePrimaryDataException("Invalid energy value.");
 
                 FuelType energySource;
                 try {
                     energySource = FuelType.fromString(values[8]);
                 } catch (IllegalArgumentException e) {
-                    throw new InvalidParsePrimaryDataException("Invalid hub energy source in row " + i);
+                    throw new InvalidParsePrimaryDataException("Error parse hub energy source");
                 }
+
+                if (energySource == FuelType.UNKNOWN)
+                    throw new InvalidParsePrimaryDataException("Invalid hub energy source");
 
                 HubOperation ho = new HubOperation(id);
                 ho.setDurationHours(duration);
