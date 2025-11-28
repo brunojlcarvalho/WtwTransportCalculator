@@ -31,6 +31,6 @@ public enum Mode {
             return INLAND_WATERWAY;
         }
 
-        return UNKNOWN;
+        return null;
     }
 }
