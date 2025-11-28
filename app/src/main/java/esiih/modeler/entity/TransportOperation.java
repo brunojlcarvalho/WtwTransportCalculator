@@ -135,11 +135,11 @@ public class TransportOperation extends TransportChainElement {
         this.litersConsumed = litersConsumed;
     }
 
-    public double getconsumptionLitTKm() {
+    public double getConsumptionLitTKm() {
         return consumptionLitTKm;
     }
 
-    public void setconsumptionLitTKm(double consumptionLitTonKm) {
+    public void setConsumptionLitTKm(double consumptionLitTonKm) {
         this.consumptionLitTKm = consumptionLitTonKm;
     }
 }
