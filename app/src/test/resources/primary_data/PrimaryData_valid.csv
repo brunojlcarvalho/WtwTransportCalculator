@@ -1,4 +1,4 @@
-Etapa;Tipo Operacao;Veiculo Transporte;Modo Transaporte;Distancia Carregado (km);Distancia Vazio (km);Carga Transportada (t);Carga Maxima (t);Tipo Combustivel;Tempo (h);Litros Consumidos (l);Consumos (l/100tkm);Energia(kWh);
+Etapa;Tipo Operacao;Veiculo Transporte;Modo Transporte;Distancia Carregado (km);Distancia Vazio (km);Carga Transportada (t);Carga Maxima (t);Tipo Combustivel;Tempo (h);Litros Consumidos (l);Consumos (l/100tkm);Energia(kWh);
 1;TO;Aviao cargueiro;Ar;15000;15000;8;28;Jet kerosene;;;;;
 2;HO;Hub;;;;8;;electricity;1;;;100;
 3;TO;Camiao;Estrada;800;800;10;20;Diesel;;;3,5;;

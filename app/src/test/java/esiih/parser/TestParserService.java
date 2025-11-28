@@ -1,5 +1,10 @@
 package esiih.parser;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
+
 import esiih.importer.boundary.ParserService;
 import esiih.importer.controller.Parser;
 import esiih.importer.entity.ParsedPrimaryData;
@@ -7,9 +12,6 @@ import esiih.importer.entity.ParsedSecondaryData;
 import esiih.importer.exception.InvalidContentException;
 import esiih.importer.exception.InvalidDataException;
 import esiih.importer.exception.InvalidFileException;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class TestParserService {
 
@@ -19,8 +21,11 @@ public class TestParserService {
     private final ParserService parserService = new Parser();
 
     /**
-     * Ensures that a valid CSV file is successfully parsed and returns non-empty
-     * Secondary Data.
+     * Tests the {@link ParserService#parseSecondaryData(String)} method.
+     * Ensures that a valid CSV file is successfully parsed and returns
+     * non-empty Secondary Data.
+     *
+     * @throws InvalidDataException
      */
     @Test
     void TestValidCSV() throws InvalidDataException {
@@ -34,6 +39,7 @@ public class TestParserService {
     }
 
     /**
+     * Tests the {@link ParserService#parseSecondaryData(String)} method.
      * Ensures that an empty CSV file throws an InvalidDataException.
      */
     @Test
@@ -41,23 +47,31 @@ public class TestParserService {
         String filePath = SECONDARY_BASE + "empty.csv";
 
         assertThrows(InvalidContentException.class,
-                () -> {parserService.parseSecondaryData(filePath);}
+                () -> {
+                    parserService.parseSecondaryData(filePath);
+                }
         );
     }
 
     /**
-     * Ensures that a CSV file with invalid headers throws an InvalidDataException.
+     * Tests the {@link ParserService#parseSecondaryData(String)} method.
+     * Ensures that a CSV file with invalid headers throws an
+     * InvalidDataException.
+     *
      */
     @Test
     void TestNoHeaderCSV() {
         String filePath = SECONDARY_BASE + "no_header.csv";
 
         assertThrows(InvalidContentException.class,
-                () -> {parserService.parseSecondaryData(filePath);}
+                () -> {
+                    parserService.parseSecondaryData(filePath);
+                }
         );
     }
 
     /**
+     * Tests the {@link ParserService#parseSecondaryData(String)} method.
      * Ensures that a CSV file with missing delimiters (semicolons) throws an
      * InvalidDataException.
      */
@@ -66,11 +80,14 @@ public class TestParserService {
         String filePath = SECONDARY_BASE + "missing_semicolon.csv";
 
         assertThrows(InvalidDataException.class,
-                () -> {parserService.parseSecondaryData(filePath);}
+                () -> {
+                    parserService.parseSecondaryData(filePath);
+                }
         );
     }
 
     /**
+     * Tests the {@link ParserService#parseSecondaryData(String)} method.
      * Ensures that a file with an invalid extension (non-CSV) throws an
      * InvalidDataException.
      */
@@ -79,11 +96,14 @@ public class TestParserService {
         String filePath = SECONDARY_BASE + "invalid.txt";
 
         assertThrows(InvalidFileException.class,
-                () -> {parserService.parseSecondaryData(filePath);}
+                () -> {
+                    parserService.parseSecondaryData(filePath);
+                }
         );
     }
 
     /**
+     * Tests the {@link ParserService#parseSecondaryData(String)} method.
      * Ensures that a CSV file containing numeric fields with negative values
      * throws an InvalidDataException.
      */
@@ -92,11 +112,14 @@ public class TestParserService {
         String filePath = SECONDARY_BASE + "negative_values.csv";
 
         assertThrows(InvalidContentException.class,
-                () -> {parserService.parseSecondaryData(filePath);}
+                () -> {
+                    parserService.parseSecondaryData(filePath);
+                }
         );
     }
 
     /**
+     * Tests the {@link ParserService#parseSecondaryData(String)} method.
      * Ensures that a CSV file with inconsistent spacing throws an
      * InvalidDataException.
      */
@@ -105,11 +128,14 @@ public class TestParserService {
         String filePath = SECONDARY_BASE + "double_space.csv";
 
         assertThrows(InvalidDataException.class,
-                () -> {parserService.parseSecondaryData(filePath);}
+                () -> {
+                    parserService.parseSecondaryData(filePath);
+                }
         );
     }
 
     /**
+     * Tests the {@link ParserService#parseSecondaryData(String)} method.
      * Ensures that a CSV file containing null values throws an
      * InvalidDataException.
      */
@@ -118,11 +144,14 @@ public class TestParserService {
         String filePath = SECONDARY_BASE + "null_values.csv";
 
         assertThrows(InvalidDataException.class,
-                () -> {parserService.parseSecondaryData(filePath);}
+                () -> {
+                    parserService.parseSecondaryData(filePath);
+                }
         );
     }
 
     /**
+     * Tests the {@link ParserService#parseSecondaryData(String)} method.
      * Ensures that a CSV file that is too large throws an InvalidDataException.
      */
     @Test
@@ -130,24 +159,31 @@ public class TestParserService {
         String filePath = SECONDARY_BASE + "large.csv";
 
         assertThrows(InvalidContentException.class,
-                () -> { parserService.parseSecondaryData(filePath);}
+                () -> {
+                    parserService.parseSecondaryData(filePath);
+                }
         );
     }
 
     /**
-     * Ensures that reading a non-existent CSV file throws an InvalidDataException.
+     * Tests the {@link ParserService#parseSecondaryData(String)} method.
+     * Ensures that reading a non-existent CSV file throws an
+     * InvalidDataException.
      */
     @Test
     void TestFileNotFound() {
         String filePath = SECONDARY_BASE + "non_existent_file.csv";
 
         assertThrows(InvalidFileException.class,
-                () -> {parserService.parseSecondaryData(filePath);}
+                () -> {
+                    parserService.parseSecondaryData(filePath);
+                }
         );
 
     }
 
     /**
+     * Tests the {@link ParserService#parseSecondaryData(String)} method.
      * Ensures that a CSV file containing strings in numeric fields throws an
      * InvalidDataException.
      */
@@ -156,11 +192,14 @@ public class TestParserService {
         String filePath = SECONDARY_BASE + "string_in_numeric.csv";
 
         assertThrows(InvalidContentException.class,
-                () -> {parserService.parseSecondaryData(filePath);}
+                () -> {
+                    parserService.parseSecondaryData(filePath);
+                }
         );
     }
 
     /**
+     * Tests the {@link ParserService#parseSecondaryData(String)} method.
      * Ensures that a CSV file containing invalid characters throws an
      * InvalidDataException.
      */
@@ -169,12 +208,15 @@ public class TestParserService {
         String filePath = SECONDARY_BASE + "invalid_characters.csv";
 
         assertThrows(InvalidDataException.class,
-                () -> {parserService.parseSecondaryData(filePath);}
+                () -> {
+                    parserService.parseSecondaryData(filePath);
+                }
         );
     }
 
     /**
-     * Ensures that a valid CSV file is successfully parsed and returns non-empty
+     * Tests the {@link ParserService#parsePrimaryData(String)} method. Ensures
+     * that a valid CSV file is successfully parsed and returns non-empty
      * Primary Data.
      */
     @Test
@@ -189,7 +231,8 @@ public class TestParserService {
     }
 
     /**
-     * Ensures that an CSV file null throws an InvalidDataException.
+     * Tests the {@link ParserService#parsePrimaryData(String)} method. Ensures
+     * that an CSV file null throws an InvalidDataException.
      */
     @Test
     void nullFilePath_throwsInvalidFileException() {
@@ -198,7 +241,8 @@ public class TestParserService {
     }
 
     /**
-     * Ensures that reading a non-existing file throws an InvalidDataException
+     * Tests the {@link ParserService#parsePrimaryData(String)} method. Ensures
+     * that reading a non-existing file throws an InvalidDataException
      */
     @Test
     void invalidExtensionFile_throwsInvalidFileException() {
@@ -209,7 +253,8 @@ public class TestParserService {
     }
 
     /**
-     * Ensures that a non-existent CSV file throws an InvalidDataException.
+     * Tests the {@link ParserService#parsePrimaryData(String)} method. Ensures
+     * that a non-existent CSV file throws an InvalidDataException.
      */
     @Test
     void nonExistingCsvFile_throwsInvalidFileException() {
@@ -220,7 +265,8 @@ public class TestParserService {
     }
 
     /**
-     * Ensures that an empty CSV file throws an InvalidDataException.
+     * Tests the {@link ParserService#parsePrimaryData(String)} method. Ensures
+     * that an empty CSV file throws an InvalidDataException.
      */
     @Test
     void emptyFile_throwsInvalidContentException() {
@@ -231,7 +277,8 @@ public class TestParserService {
     }
 
     /**
-     * Ensures that a CSV file with missing headers throws validation failure.
+     * Tests the {@link ParserService#parsePrimaryData(String)} method. Ensures
+     * that a CSV file with missing headers throws validation failure.
      */
     @Test
     void fileWithoutHeaders_throwsInvalidContentException() {
@@ -242,7 +289,8 @@ public class TestParserService {
     }
 
     /**
-     * Ensures that a data line without a semicolon is detected as invalid.
+     * Tests the {@link ParserService#parsePrimaryData(String)} method. Ensures
+     * that a data line without a semicolon is detected as invalid.
      */
     @Test
     void fileWithMissingSemicolon_throwsInvalidContentException() {
@@ -253,7 +301,8 @@ public class TestParserService {
     }
 
     /**
-     * Ensures that an CSV file with invalid Chars throws an InvalidDataException.
+     * Tests the {@link ParserService#parsePrimaryData(String)} method. Ensures
+     * that an CSV file with invalid Chars throws an InvalidDataException.
      */
     @Test
     void fileWithInvalidCharacters_throwsInvalidContentException() {
@@ -264,8 +313,8 @@ public class TestParserService {
     }
 
     /**
-     * Ensures that an CSV file with more than 50 lines throws an
-     * InvalidDataException.
+     * Tests the {@link ParserService#parsePrimaryData(String)} method. Ensures
+     * that an CSV file with more than 50 lines throws an InvalidDataException.
      */
     @Test
     void csvFileWithMoreThanMaxLines_throwsInvalidContentException() {

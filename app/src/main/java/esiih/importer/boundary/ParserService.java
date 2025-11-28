@@ -10,6 +10,7 @@ import esiih.importer.exception.InvalidDataException;
 public interface ParserService {
 
     public ParsedSecondaryData parseSecondaryData(String filePath) throws InvalidDataException;
+
     public ParsedPrimaryData parsePrimaryData(String filePath) throws InvalidDataException;
 
 }

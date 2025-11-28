@@ -1,17 +1,21 @@
 package esiih.importer.controller;
 
+import java.util.regex.Pattern;
+
 import esiih.importer.exception.InvalidContentException;
 import esiih.importer.exception.InvalidDataException;
 
-import java.util.regex.Pattern;
-
+/**
+ * Responsible for validating the headers of the Secondary Data CSV file.
+ */
 class SecondaryHeaderParser {
 
     /**
      * Parses and validates the header line of a Secondary Data CSV file.
      *
      * @param headerLine the header line of the CSV file
-     * @return an array of indexes indicating the position of required numeric columns
+     * @return an array of indexes indicating the position of required numeric
+     * columns
      * @throws InvalidDataException
      */
     int[] parseAndValidateHeader(String headerLine) throws InvalidDataException {
@@ -45,16 +49,17 @@ class SecondaryHeaderParser {
             }
         }
 
-        if (!isValidSecondaryDataHeaders(headerFields))
+        if (!isValidSecondaryDataHeaders(headerFields)) {
             throw new InvalidContentException("CSV file has invalid headers.");
+        }
 
-        return new int[] {
-                payloadIndex,
-                emptyKmIndex,
-                wttIndex,
-                ttwIndex,
-                totalIndex,
-                averageIndex
+        return new int[]{
+            payloadIndex,
+            emptyKmIndex,
+            wttIndex,
+            ttwIndex,
+            totalIndex,
+            averageIndex
         };
     }
 
@@ -63,48 +68,56 @@ class SecondaryHeaderParser {
      * the parsing of Secondary Data files.
      *
      * @param line the CSV line to validate
-     * @throws InvalidDataException if any formatting issues or invalid characters are detected
+     * @throws InvalidDataException if any formatting issues or invalid
+     * characters are detected
      */
     private void validateCommonLineProblems(String line) throws InvalidDataException {
-        if (line.contains("  "))
+        if (line.contains("  ")) {
             throw new InvalidContentException("CSV file has inconsistent spacing.");
+        }
 
-        if (line.contains(","))
+        if (line.contains(",")) {
             throw new InvalidContentException("CSV file has inconsistent delimiters. Expected semicolon (;).");
+        }
 
-        if (line.contains("null"))
+        if (line.contains("null")) {
             throw new InvalidContentException("CSV file contains null values.");
+        }
 
-        if (!Pattern.matches("[\\w\\s;./Â·+\\u00C0-\\u00FF-]+", line))
+        if (!Pattern.matches("[\\w\\s;./Â·+\\u00C0-\\u00FF-]+", line)) {
             throw new InvalidContentException("CSV file contains invalid characters in line: " + line);
+        }
     }
 
     /**
-     * Checks whether the provided array of header fields matches exactly
-     * the expected header structure for Secondary Data CSV files.
+     * Checks whether the provided array of header fields matches exactly the
+     * expected header structure for Secondary Data CSV files.
      *
      * @param headers the array of header fields extracted from the CSV line
-     * @return true if the headers match the expected structure exactly; false otherwise
+     * @return true if the headers match the expected structure exactly; false
+     * otherwise
      */
     private boolean isValidSecondaryDataHeaders(String[] headers) {
         final String[] expectedHeaders = {
-                "Mode",
-                "FuelType",
-                "PayloadT",
-                "EmptyKmPct",
-                "ActivityUnit",
-                "WttEmissionsKgPerTkm",
-                "TtwEmissionsKgPerTkm",
-                "TotalEmissionsKgPerTkm",
-                "AverageLitersPer100Tkm"
+            "Mode",
+            "FuelType",
+            "PayloadT",
+            "EmptyKmPct",
+            "ActivityUnit",
+            "WttEmissionsKgPerTkm",
+            "TtwEmissionsKgPerTkm",
+            "TotalEmissionsKgPerTkm",
+            "AverageLitersPer100Tkm"
         };
 
-        if (headers.length != expectedHeaders.length)
+        if (headers.length != expectedHeaders.length) {
             return false;
+        }
 
         for (int i = 0; i < headers.length; i++) {
-            if (!headers[i].trim().equalsIgnoreCase(expectedHeaders[i]))
+            if (!headers[i].trim().equalsIgnoreCase(expectedHeaders[i])) {
                 return false;
+            }
         }
         return true;
     }

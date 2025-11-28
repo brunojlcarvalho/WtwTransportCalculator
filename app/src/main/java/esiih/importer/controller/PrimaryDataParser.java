@@ -1,10 +1,5 @@
 package esiih.importer.controller;
 
-import esiih.importer.entity.*;
-import esiih.importer.exception.InvalidContentException;
-import esiih.importer.exception.InvalidDataException;
-import esiih.importer.exception.InvalidFileException;
-
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -12,16 +7,28 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
 
+import esiih.importer.entity.ParsedPrimaryData;
+import esiih.importer.exception.InvalidContentException;
+import esiih.importer.exception.InvalidDataException;
+import esiih.importer.exception.InvalidFileException;
+
+/**
+ * Parser for Primary Data CSV files.
+ */
 public class PrimaryDataParser {
+
     private static final int MAX_LINES_PRIMARY = 50;
 
+    private final PrimaryHeaderParser headerParser = new PrimaryHeaderParser();
+
     /**
-     * Parses a Primary Data CSV file and returns a {@link ParsedPrimaryData} instance
-     * containing the raw content of the file.
+     * Parses a Primary Data CSV file and returns a {@link ParsedPrimaryData}
+     * instance containing the raw content of the file.
      *
      * @param filePath the path to the CSV file to parse
      * @return a {@link ParsedPrimaryData} object containing the raw file data
-     * @throws InvalidDataException if the file path, structure, or contents are invalid
+     * @throws InvalidDataException if the file path, structure, or contents are
+     * invalid
      * @throws InvalidFileException if reading the file fails
      */
     public ParsedPrimaryData parsePrimaryData(String filePath) throws InvalidDataException {
@@ -32,11 +39,11 @@ public class PrimaryDataParser {
         try {
             data = readFile(filePath);
         } catch (IOException e) {
-            e.printStackTrace();
             throw new InvalidFileException("Error reading the file.", e);
         }
 
         String[] lines = data.split("\n");
+
         validateStructure(lines);
 
         validateLines(lines);
@@ -50,7 +57,8 @@ public class PrimaryDataParser {
      * Validates the provided file path.
      *
      * @param filePath the file path to validate
-     * @throws InvalidFileException if the file path is empty, null, or not a CSV file
+     * @throws InvalidFileException if the file path is empty, null, or not a
+     * CSV file
      */
     private void validateFilePath(String filePath) throws InvalidFileException {
         if (filePath == null || filePath.isBlank()) {
@@ -67,7 +75,7 @@ public class PrimaryDataParser {
      *
      * @param lines all lines of the CSV file
      * @throws InvalidContentException if the structure is incomplete, empty,
-     *                                 contains too many lines, or has invalid headers
+     * contains too many lines, or has invalid headers
      */
     private void validateStructure(String[] lines) throws InvalidContentException {
         if (lines.length == 0 || lines[0].trim().isEmpty()) {
@@ -81,7 +89,7 @@ public class PrimaryDataParser {
         String header = lines[0];
         String[] headerParts = header.split(";");
 
-        if (!isValidPrimaryDataHeaders(headerParts)) {
+        if (!headerParser.isValidPrimaryDataHeaders(headerParts)) {
             throw new InvalidContentException("Incomplete or invalid headers.");
         }
     }
@@ -90,7 +98,8 @@ public class PrimaryDataParser {
      * Validates each line of the CSV file after the header.
      *
      * @param lines all lines of the CSV file
-     * @throws InvalidContentException if a line contains invalid characters or lacks delimiters
+     * @throws InvalidContentException if a line contains invalid characters or
+     * lacks delimiters
      */
     private void validateLines(String[] lines) throws InvalidContentException {
         for (int i = 1; i < lines.length; i++) {
@@ -104,31 +113,6 @@ public class PrimaryDataParser {
                 throw new InvalidContentException("Missing semicolon ';' between the data.");
             }
         }
-    }
-
-    /**
-     * Checks if the headers are valid for Primary Data.
-     *
-     * @param headers the headers
-     * @return true if the headers are valid, false otherwise
-     */
-    private boolean isValidPrimaryDataHeaders(String[] headers) {
-        String[] expectedHeaders = {
-                "Etapa", "Tipo Operacao", "Veiculo Transporte", "Modo Transaporte",
-                "Distancia Carregado (km)", "Distancia Vazio (km)", "Carga Transportada (t)",
-                "Carga Maxima (t)", "Tipo Combustivel", "Tempo (h)", "Litros Consumidos (l)",
-                "Consumos (l/100tkm)", "Energia(kWh)"
-        };
-
-        if (headers.length != expectedHeaders.length) {
-            return false;
-        }
-        for (int i = 0; i < headers.length; i++) {
-            if (!headers[i].trim().equalsIgnoreCase(expectedHeaders[i])) {
-                return false;
-            }
-        }
-        return true;
     }
 
     /**
