@@ -149,7 +149,7 @@ public class TestParserService {
      */
     @Test
     void TestFileTooLarge() {
-        String filePath = SECONDARY_BASE + "large.csv";
+        String filePath = SECONDARY_BASE + "1001lines.csv";
 
         assertThrows(InvalidContentException.class,
                 () -> {
@@ -159,12 +159,33 @@ public class TestParserService {
 
     @Test
     void TestFileTooSmall() {
-        String filePath = SECONDARY_BASE + "small.csv";
+        String filePath = SECONDARY_BASE + "1line.csv";
 
         assertThrows(InvalidContentException.class,
                 () -> {
                     parserService.parseSecondaryData(filePath);
                 });
+    }
+
+    @Test
+    void TestBoundaryMaxLines() throws InvalidDataException {
+        String filePath = SECONDARY_BASE + "1000lines.csv";
+
+        ParsedSecondaryData result = parserService.parseSecondaryData(filePath);
+
+        assertNotNull(result);
+        assertNotNull(result.getSecondaryDataString());
+    }
+
+    @Test
+    void TestBoundaryMinLines() throws InvalidDataException {
+        String filePath = SECONDARY_BASE + "2lines.csv";
+
+        ParsedSecondaryData result = parserService.parseSecondaryData(filePath);
+
+        assertNotNull(result);
+        assertNotNull(result.getSecondaryDataString());
+        assertFalse(result.getSecondaryDataString().isEmpty());
     }
 
     /**
