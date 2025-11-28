@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
 
+import esiih.importer.boundary.PrimaryParserService;
 import esiih.importer.entity.ParsedPrimaryData;
 import esiih.importer.exception.InvalidContentException;
 import esiih.importer.exception.InvalidDataException;
@@ -15,7 +16,7 @@ import esiih.importer.exception.InvalidFileException;
 /**
  * Parser for Primary Data CSV files.
  */
-public class PrimaryDataParser {
+public class PrimaryDataParser implements PrimaryParserService {
 
     private static final int MAX_LINES_PRIMARY = 50;
 

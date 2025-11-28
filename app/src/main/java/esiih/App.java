@@ -1,7 +1,9 @@
 package esiih;
 
-import esiih.importer.boundary.ParserService;
-import esiih.importer.controller.Parser;
+import esiih.importer.boundary.PrimaryParserService;
+import esiih.importer.boundary.SecondaryParserService;
+import esiih.importer.controller.PrimaryDataParser;
+import esiih.importer.controller.SecondaryDataParser;
 import esiih.importer.entity.ParsedPrimaryData;
 import esiih.importer.entity.ParsedSecondaryData;
 import esiih.importer.exception.InvalidDataException;
@@ -15,11 +17,11 @@ public class App {
         String secondaryDataFilePath = "app/src/main/resources/secondary_data.csv";
         String primaryDataFilePath = "app/src/main/resources/primary_data.csv";
 
-
         try {
-            ParserService parser = new Parser();
-            ParsedSecondaryData parsedSecondaryData = parser.parseSecondaryData(secondaryDataFilePath);
-            ParsedPrimaryData parsedPrimaryData = parser.parsePrimaryData(primaryDataFilePath);
+            SecondaryParserService secondaryParserService = new SecondaryDataParser();
+            ParsedSecondaryData parsedSecondaryData = secondaryParserService.parseSecondaryData(secondaryDataFilePath);
+            PrimaryParserService primaryParserService = new PrimaryDataParser();
+            ParsedPrimaryData parsedPrimaryData = primaryParserService.parsePrimaryData(primaryDataFilePath);
 
             printSecondaryData(parsedSecondaryData);
             System.out.println("###############################################################################");
