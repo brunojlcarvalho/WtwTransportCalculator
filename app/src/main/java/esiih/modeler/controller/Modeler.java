@@ -1,7 +1,12 @@
 package esiih.modeler.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import esiih.importer.entity.ParsedPrimaryData;
+import esiih.importer.entity.ParsedSecondaryData;
 import esiih.modeler.boundary.ModelerService;
+import esiih.modeler.entity.EmissionFactor;
 import esiih.modeler.entity.HubOperation;
 import esiih.modeler.entity.TransportChain;
 import esiih.modeler.entity.TransportChainElement;
@@ -9,6 +14,7 @@ import esiih.modeler.entity.TransportOperation;
 import esiih.modeler.entity.enums.FuelType;
 import esiih.modeler.entity.enums.Mode;
 import esiih.modeler.exception.InvalidParsePrimaryDataException;
+import esiih.modeler.exception.InvalidParsedSecondaryDataException;
 
 /**
  * Implementation of the ModelerService interface for modeling transport chains
@@ -18,6 +24,7 @@ public class Modeler implements ModelerService {
 
     private final ModelTransportOperation modelTransportOperation = new ModelTransportOperation();
     private final ModelHubOperation modelHubOperation = new ModelHubOperation();
+    private final ModelEmissionFactor modelEmissionFactor = new ModelEmissionFactor();
 
     /**
      * Models the TransportChain from the parsed primary data.
@@ -95,5 +102,55 @@ public class Modeler implements ModelerService {
         }
         // se não for nenhum tipo conhecido, neste momento ignoramos
         return null;
+    }
+
+    /**
+     * Models the EmissionFactors from the parsed secondary data.
+     *
+     * @param parsedData the parsed secondary data
+     * @return the list of emission factors
+     * @throws InvalidParsedSecondaryDataException if the parsed data is invalid
+     */
+    @Override
+    public List<EmissionFactor> modelEmissionFactors(ParsedSecondaryData parsedData) throws InvalidParsedSecondaryDataException {
+
+        validateParsedSecondaryData(parsedData);
+
+        String[] lines = parsedData.getSecondaryDataString().split("\n");
+
+        List<EmissionFactor> emissionFactors = new ArrayList<>();
+
+        for (int i = 1; i < lines.length; i++) {
+            String line = lines[i].trim();
+            if (line.isEmpty()) {
+                continue;
+            }
+
+            String[] values = line.split(";", -1);
+
+            EmissionFactor ef = modelEmissionFactor.fromCsv(values, i);
+            emissionFactors.add(ef);
+        }
+
+        return emissionFactors;
+    }
+
+    /**
+     * Validates the parsed secondary CSV wrapper to ensure it contains usable data.
+     *
+     * @param parsedData
+     * @throws InvalidParsedSecondaryDataException
+     */
+    private void validateParsedSecondaryData(ParsedSecondaryData parsedData)
+            throws InvalidParsedSecondaryDataException {
+
+        if (parsedData == null) {
+            throw new InvalidParsedSecondaryDataException("ParsedSecondaryData is null");
+        }
+
+        String secondaryString = parsedData.getSecondaryDataString();
+        if (secondaryString == null || secondaryString.isEmpty()) {
+            throw new InvalidParsedSecondaryDataException("ParsedSecondaryData string is null or empty");
+        }
     }
 }

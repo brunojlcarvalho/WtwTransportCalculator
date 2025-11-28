@@ -1,28 +1,34 @@
 package esiih.modeler;
 
 import esiih.importer.entity.ParsedPrimaryData;
+import esiih.importer.entity.ParsedSecondaryData;
 import esiih.modeler.controller.Modeler;
+import esiih.modeler.entity.EmissionFactor;
 import esiih.modeler.entity.HubOperation;
 import esiih.modeler.entity.TransportChain;
 import esiih.modeler.entity.TransportOperation;
 import esiih.modeler.exception.InvalidParsePrimaryDataException;
-import esiih.modeler.exception.InvalidPrimaryFormatException;
+import esiih.modeler.exception.InvalidParsedSecondaryDataException;
 import esiih.modeler.exception.InvalidPrimaryValueException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ModelerPrimaryTest {
+import java.util.List;
+
+public class TestModelerService {
 
     private Modeler modeler;
     private ParsedPrimaryData parsed;
+    private ParsedSecondaryData parsedSecondary;
     String PRIMARY_HEADER = "Etapa;Tipo Operacao;Veiculo Transporte;Modo Transporte;Distancia Carregado (km);Distancia Vazio (km);Carga Transportada (t);Carga Maxima (t);Tipo Combustivel;Tempo (h);Litros Consumidos (l);Consumos (l/100tkm);Energia(kWh);";
-
+    String SECONDARY_HEADER = "Mode;Fuel;Payload;Empty;Unit;WTT;TTW;Total;Avg";
     @BeforeEach
     void setUp() {
         modeler = new Modeler();
         parsed = new ParsedPrimaryData();
+        parsedSecondary = new ParsedSecondaryData();
     }
 
     /**
@@ -808,4 +814,387 @@ public class ModelerPrimaryTest {
                 () -> modeler.modelTransportChain(parsed)
         );
     }
+
+    // ==================================================================================
+        // TESTES DE DADOS SECUNDÁRIOS (EmissionFactors)
+        // ==================================================================================
+
+        /**
+         * Tests the {@link Modeler#modelEmissionFactors(ParsedSecondaryData)},
+         * Ensures an exception is thrown when the ParsedSecondaryData argument is null.
+         */
+        @Test
+        void modelEmissionFactors_NullParsedData_ShouldThrowInvalidParsedSecondaryDataException() {
+                assertThrows(InvalidParsedSecondaryDataException.class, () -> modeler.modelEmissionFactors(null));
+        }
+
+        /**
+         * Tests the {@link Modeler#modelEmissionFactors(ParsedSecondaryData)},
+         * Ensures an exception is thrown when the CSV secondary string is empty.
+         */
+        @Test
+        void modelEmissionFactors_EmptyString_ShouldThrowInvalidParsedSecondaryDataException() {
+                parsedSecondary.setSecondaryDataString("");
+
+                assertThrows(InvalidParsedSecondaryDataException.class,
+                                () -> modeler.modelEmissionFactors(parsedSecondary));
+        }
+
+        /**
+         * Tests the {@link Modeler#modelEmissionFactors(ParsedSecondaryData)},
+         * Validates that valid secondary data creates EmissionFactor instances.
+         */
+        @Test
+        void modelEmissionFactors_ValidData_ShouldReturnListOfEmissionFactors() throws InvalidParsedSecondaryDataException {
+                String csvContent = SECONDARY_HEADER + "\n" +
+                                "road;diesel;10;0;kg CO2e / t·km;0.5;2.5;3.0;15.0\n" +
+                                "hub;electricity;0;0;kg CO2e / t·h;0.1;0.2;0.3;0.0";
+
+                parsedSecondary.setSecondaryDataString(csvContent);
+
+                List<EmissionFactor> factors = modeler.modelEmissionFactors(parsedSecondary);
+                assertNotNull(factors);
+                assertEquals(2, factors.size());
+        }
+
+        /**
+         * Tests the {@link Modeler#modelEmissionFactors(ParsedSecondaryData)},
+         * Validates the 'Mode' domain validation.
+         */
+        @Test
+        void modelEmissionFactors_InvalidMode_ShouldThrowInvalidParsedSecondaryDataException() {
+                String csvContent = SECONDARY_HEADER + "\n" +
+                                "TELEPORT;diesel;10;0;kg CO2e / t·km;0.5;2.5;3.0;15.0";
+
+                parsedSecondary.setSecondaryDataString(csvContent);
+
+                assertThrows(InvalidParsedSecondaryDataException.class,
+                                () -> modeler.modelEmissionFactors(parsedSecondary));
+        }
+
+        /**
+         * Tests the {@link Modeler#modelEmissionFactors(ParsedSecondaryData)},
+         * Validates the 'Fuel' domain validation.
+         */
+        @Test
+        void modelEmissionFactors_InvalidFuel_ShouldThrowInvalidParsedSecondaryDataException() {
+                String csvContent = SECONDARY_HEADER + "\n" +
+                                "road;AGUA;10;0;kg CO2e / t·km;0.5;2.5;3.0;15.0";
+
+                parsedSecondary.setSecondaryDataString(csvContent);
+
+                assertThrows(InvalidParsedSecondaryDataException.class,
+                                () -> modeler.modelEmissionFactors(parsedSecondary));
+        }
+
+        /**
+         * Tests the {@link Modeler#modelEmissionFactors(ParsedSecondaryData)},
+         * Validates the numeric format for 'Payload' field.
+         */
+        @Test
+        void modelEmissionFactors_NonNumericPayload_ShouldThrowInvalidParsedSecondaryDataException() {
+                String csvContent = SECONDARY_HEADER + "\n" +
+                                "road;diesel;DEZ;0;kg CO2e / t·km;0.5;2.5;3.0;15.0";
+
+                parsedSecondary.setSecondaryDataString(csvContent);
+
+                assertThrows(NumberFormatException.class,
+                                () -> modeler.modelEmissionFactors(parsedSecondary));
+        }
+
+        /**
+         * Tests the {@link Modeler#modelEmissionFactors(ParsedSecondaryData)},
+         * Validates the numeric format for 'Empty Percentage' field.
+         */
+        @Test
+        void modelEmissionFactors_NonNumericEmptyPct_ShouldThrowInvalidParsedSecondaryDataException() {
+                String csvContent = SECONDARY_HEADER + "\n" +
+                                "road;diesel;10;NADA;kg CO2e / t·km;0.5;2.5;3.0;15.0";
+
+                parsedSecondary.setSecondaryDataString(csvContent);
+
+                assertThrows(NumberFormatException.class,
+                                () -> modeler.modelEmissionFactors(parsedSecondary));
+        }
+
+        /**
+         * Tests the {@link Modeler#modelEmissionFactors(ParsedSecondaryData)},
+         * Validates the 'Unit' domain validation.
+         */
+        @Test
+        void modelEmissionFactors_InvalidUnit_ShouldThrowInvalidParsedSecondaryDataException() {
+                String csvContent = SECONDARY_HEADER + "\n" +
+                                "road;diesel;10;0;garrafas/km;0.5;2.5;3.0;15.0";
+
+                parsedSecondary.setSecondaryDataString(csvContent);
+
+                assertThrows(InvalidParsedSecondaryDataException.class,
+                                () -> modeler.modelEmissionFactors(parsedSecondary));
+        }
+
+        /**
+         * Tests the {@link Modeler#modelEmissionFactors(ParsedSecondaryData)},
+         * Validates the numeric format for 'WTT' (Well-to-Tank).
+         */
+        @Test
+        void modelEmissionFactors_NonNumericWtt_ShouldThrowInvalidParsedSecondaryDataException() {
+                String csvContent = SECONDARY_HEADER + "\n" +
+                                "road;diesel;10;0;kg CO2e / t·km;ALTO;2.5;3.0;15.0";
+
+                parsedSecondary.setSecondaryDataString(csvContent);
+
+                assertThrows(NumberFormatException.class,
+                                () -> modeler.modelEmissionFactors(parsedSecondary));
+        }
+
+        /**
+         * Tests the {@link Modeler#modelEmissionFactors(ParsedSecondaryData)},
+         * Validates the numeric format for 'TTW' (Tank-to-Wheel).
+         */
+        @Test
+        void modelEmissionFactors_NonNumericTtw_ShouldThrowInvalidParsedSecondaryDataException() {
+                String csvContent = SECONDARY_HEADER + "\n" +
+                                "road;diesel;10;0;kg CO2e / t·km;0.5;BAIXO;3.0;15.0";
+
+                parsedSecondary.setSecondaryDataString(csvContent);
+
+                assertThrows(NumberFormatException.class,
+                                () -> modeler.modelEmissionFactors(parsedSecondary));
+        }
+
+        /**
+         * Tests the {@link Modeler#modelEmissionFactors(ParsedSecondaryData)},
+         * Validates the numeric format for 'Average Consumption'.
+         */
+        @Test
+        void modelEmissionFactors_NonNumericAvgConsumption_ShouldThrowInvalidParsedSecondaryDataException() {
+                String csvContent = SECONDARY_HEADER + "\n" +
+                                "road;diesel;10;0;kg CO2e / t·km;0.5;2.5;3.0;MUITO";
+
+                parsedSecondary.setSecondaryDataString(csvContent);
+
+                assertThrows(NumberFormatException.class,
+                                () -> modeler.modelEmissionFactors(parsedSecondary));
+        }
+
+        /**
+         * Tests the {@link Modeler#modelEmissionFactors(ParsedSecondaryData)},
+         * Validates the 'Unit' compatibility with 'Mode'.
+         * @throws InvalidParsedSecondaryDataException
+         */
+        @Test
+        void modelEmissionFactors_IncompatibleUnitForMode_ShouldThrowInvalidParsedSecondaryDataException() {
+                String csvContent = SECONDARY_HEADER + "\n" +
+                                "road;diesel;10;0;kg CO2e / t·h;0.5;2.5;3.0;15.0";
+
+                parsedSecondary.setSecondaryDataString(csvContent);
+
+                assertThrows(InvalidParsedSecondaryDataException.class,
+                                () -> modeler.modelEmissionFactors(parsedSecondary));
+        }
+
+        // ==================================================================================
+        // PAYLOAD BOUNDARIES (Min: 0, Max: 28)
+        // ==================================================================================
+
+        /**
+         * Tests the {@link Modeler#modelEmissionFactors(ParsedSecondaryData)},
+         * Validates the minimum boundary for 'Payload'.
+         */
+        @Test
+        void modelEmissionFactors_PayloadMinBoundary_ShouldSucceed() throws InvalidParsedSecondaryDataException {
+                String csvContent = SECONDARY_HEADER + "\n" +
+                                "road;diesel;0;0;kg CO2e / t·km;0.5;2.5;3.0;15.0";
+
+                parsedSecondary.setSecondaryDataString(csvContent);
+                List<EmissionFactor> factors = modeler.modelEmissionFactors(parsedSecondary);
+                assertNotNull(factors);
+                assertEquals(1, factors.size());
+        }
+
+        /**
+         * Tests the {@link Modeler#modelEmissionFactors(ParsedSecondaryData)},
+         * Validates the maximum boundary for 'Payload'.
+         */
+        @Test
+        void modelEmissionFactors_PayloadMaxBoundary_ShouldSucceed() throws InvalidParsedSecondaryDataException {
+                String csvContent = SECONDARY_HEADER + "\n" +
+                                "road;diesel;28;0;kg CO2e / t·km;0.5;2.5;3.0;15.0";
+
+                parsedSecondary.setSecondaryDataString(csvContent);
+                List<EmissionFactor> factors = modeler.modelEmissionFactors(parsedSecondary);
+                assertNotNull(factors);
+        }
+
+        /**
+         * Tests the {@link Modeler#modelEmissionFactors(ParsedSecondaryData)},
+         * Validates 'Payload' below minimum boundary.
+         */
+        @Test
+        void modelEmissionFactors_PayloadBelowMin_ShouldThrowException() {
+                String csvContent = SECONDARY_HEADER + "\n" +
+                                "road;diesel;-1;0;kg CO2e / t·km;0.5;2.5;3.0;15.0";
+
+                parsedSecondary.setSecondaryDataString(csvContent);
+                assertThrows(InvalidParsedSecondaryDataException.class,
+                                () -> modeler.modelEmissionFactors(parsedSecondary));
+        }
+
+        /**
+         * Tests the {@link Modeler#modelEmissionFactors(ParsedSecondaryData)},
+         * Validates 'Payload' above maximum boundary.
+         */
+        @Test
+        void modelEmissionFactors_PayloadAboveMax_ShouldThrowException() {
+                String csvContent = SECONDARY_HEADER + "\n" +
+                                "road;diesel;29;0;kg CO2e / t·km;0.5;2.5;3.0;15.0";
+
+                parsedSecondary.setSecondaryDataString(csvContent);
+                assertThrows(InvalidParsedSecondaryDataException.class,
+                                () -> modeler.modelEmissionFactors(parsedSecondary));
+        }
+
+        // ==================================================================================
+        // EMPTY PERCENTAGE BOUNDARIES (Min: 0, Max: 1)
+        // ==================================================================================
+
+        /**
+         * Tests the {@link Modeler#modelEmissionFactors(ParsedSecondaryData)},
+         * Validates the minimum boundary for 'Empty Percentage'.
+         */
+        @Test
+        void modelEmissionFactors_EmptyPctMinBoundary_ShouldSucceed() throws InvalidParsedSecondaryDataException {
+                String csvContent = SECONDARY_HEADER + "\n" +
+                                "road;diesel;10;0;kg CO2e / t·km;0.5;2.5;3.0;15.0";
+
+                parsedSecondary.setSecondaryDataString(csvContent);
+                assertNotNull(modeler.modelEmissionFactors(parsedSecondary));
+        }
+        
+        /**
+         * Tests the {@link Modeler#modelEmissionFactors(ParsedSecondaryData)},
+         * Validates the maximum boundary for 'Empty Percentage'.
+         */
+        @Test
+        void modelEmissionFactors_EmptyPctMaxBoundary_ShouldSucceed() throws InvalidParsedSecondaryDataException {
+                String csvContent = SECONDARY_HEADER + "\n" +
+                                "road;diesel;10;1;kg CO2e / t·km;0.5;2.5;3.0;15.0";
+
+                parsedSecondary.setSecondaryDataString(csvContent);
+                assertNotNull(modeler.modelEmissionFactors(parsedSecondary));
+        }
+
+        /**
+         * Tests the {@link Modeler#modelEmissionFactors(ParsedSecondaryData)},
+         * Validates 'Empty Percentage' below minimum boundary.
+         */
+        @Test
+        void modelEmissionFactors_EmptyPctBelowMin_ShouldThrowException() {
+                String csvContent = SECONDARY_HEADER + "\n" +
+                                "road;diesel;10;-1;kg CO2e / t·km;0.5;2.5;3.0;15.0";
+
+                parsedSecondary.setSecondaryDataString(csvContent);
+                assertThrows(InvalidParsedSecondaryDataException.class,
+                                () -> modeler.modelEmissionFactors(parsedSecondary));
+        }
+
+        /**
+         * Tests the {@link Modeler#modelEmissionFactors(ParsedSecondaryData)},
+         * Validates 'Empty Percentage' above maximum boundary.
+         */
+        @Test
+        void modelEmissionFactors_EmptyPctAboveMax_ShouldThrowException() {
+                String csvContent = SECONDARY_HEADER + "\n" +
+                                "road;diesel;10;2;kg CO2e / t·km;0.5;2.5;3.0;15.0";
+
+                parsedSecondary.setSecondaryDataString(csvContent);
+                assertThrows(InvalidParsedSecondaryDataException.class,
+                                () -> modeler.modelEmissionFactors(parsedSecondary));
+        }
+
+        // ==================================================================================
+        // METRICS BOUNDARIES (WTT, TTW, AvgConsumption) - Check Negative Values
+        // ==================================================================================
+
+        
+        /**
+         * Tests the {@link Modeler#modelEmissionFactors(ParsedSecondaryData)},
+         * Validates 'WTT' below minimum boundary.
+         */
+        @Test
+        void modelEmissionFactors_WttBelowMin_ShouldThrowException() {
+                String csvContent = SECONDARY_HEADER + "\n" +
+                                "road;diesel;10;0;kg CO2e / t·km;-1.0;2.5;3.0;15.0";
+
+                parsedSecondary.setSecondaryDataString(csvContent);
+                assertThrows(InvalidParsedSecondaryDataException.class,
+                                () -> modeler.modelEmissionFactors(parsedSecondary));
+        }
+
+        /**
+         * Tests the {@link Modeler#modelEmissionFactors(ParsedSecondaryData)},
+         * Validates the minimum boundary for 'WTT'.
+         */
+        @Test
+        void modelEmissionFactors_WttMinBoundary_ShouldSucceed() throws InvalidParsedSecondaryDataException {
+                String csvContent = SECONDARY_HEADER + "\n" +
+                                "road;diesel;10;0;kg CO2e / t·km;0.0;2.5;3.0;15.0";
+
+                parsedSecondary.setSecondaryDataString(csvContent);
+                assertNotNull(modeler.modelEmissionFactors(parsedSecondary));
+        }
+
+        /**
+         * Tests the {@link Modeler#modelEmissionFactors(ParsedSecondaryData)},
+         * Validates 'TTW' below minimum boundary.
+         */
+        @Test
+        void modelEmissionFactors_TtwBelowMin_ShouldThrowException() {
+                String csvContent = SECONDARY_HEADER + "\n" +
+                                "road;diesel;10;0;kg CO2e / t·km;0.5;-1.0;3.0;15.0";
+
+                parsedSecondary.setSecondaryDataString(csvContent);
+                assertThrows(InvalidParsedSecondaryDataException.class,
+                                () -> modeler.modelEmissionFactors(parsedSecondary));
+        }
+
+        /**
+         * Tests the {@link Modeler#modelEmissionFactors(ParsedSecondaryData)},
+         * Validates the minimum boundary for 'TTW'.
+         */
+        @Test
+        void modelEmissionFactors_TtwMinBoundary_ShouldSucceed() throws InvalidParsedSecondaryDataException {
+                String csvContent = SECONDARY_HEADER + "\n" +
+                                "road;diesel;10;0;kg CO2e / t·km;0.5;0.0;3.0;15.0";
+
+                parsedSecondary.setSecondaryDataString(csvContent);
+                assertNotNull(modeler.modelEmissionFactors(parsedSecondary));
+        }
+
+        /**
+         * Tests the {@link Modeler#modelEmissionFactors(ParsedSecondaryData)},
+         * Validates 'Average Consumption' below minimum boundary.
+         */
+        @Test
+        void modelEmissionFactors_AvgConsumptionBelowMin_ShouldThrowException() {
+                String csvContent = SECONDARY_HEADER + "\n" +
+                                "road;diesel;10;0;kg CO2e / t·km;0.5;2.5;3.0;-1.0";
+
+                parsedSecondary.setSecondaryDataString(csvContent);
+                assertThrows(InvalidParsedSecondaryDataException.class,
+                                () -> modeler.modelEmissionFactors(parsedSecondary));
+        }
+
+        /**
+         * Tests the {@link Modeler#modelEmissionFactors(ParsedSecondaryData)},
+         * Validates the minimum boundary for 'Average Consumption'.
+         */
+        @Test
+        void modelEmissionFactors_AvgConsumptionMinBoundary_ShouldSucceed() throws InvalidParsedSecondaryDataException {
+                String csvContent = SECONDARY_HEADER + "\n" +
+                                "road;diesel;10;0;kg CO2e / t·km;0.5;2.5;3.0;0.0";
+
+                parsedSecondary.setSecondaryDataString(csvContent);
+                assertNotNull(modeler.modelEmissionFactors(parsedSecondary));
+        }
 }

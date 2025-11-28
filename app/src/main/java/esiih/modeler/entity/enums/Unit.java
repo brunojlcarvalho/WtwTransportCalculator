@@ -12,8 +12,7 @@ public enum Unit {
     HOURS("h"),
     KG_CO2E_PER_TKM("kg CO2e / t·km"),
     KG_CO2E_PER_TH("kg CO2e / t·h"),
-    KG_CO2E_PER_KWH("kg CO2e / kWh equiv"),
-    UNKNOWN("unknown");
+    KG_CO2E_PER_KWH("kg CO2e / kWh equiv");
 
     private final String symbol;
 
@@ -26,9 +25,6 @@ public enum Unit {
     }
 
     public static Unit fromString(String text) {
-        if (text == null) {
-            return UNKNOWN;
-        }
         String normalized = text.trim();
 
         for (Unit u : Unit.values()) {
@@ -46,6 +42,6 @@ public enum Unit {
             return KG_CO2E_PER_KWH;
         }
 
-        return UNKNOWN;
+        return null;
     }
 }
