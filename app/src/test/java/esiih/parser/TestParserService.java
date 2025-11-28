@@ -49,8 +49,7 @@ public class TestParserService {
         assertThrows(InvalidContentException.class,
                 () -> {
                     parserService.parseSecondaryData(filePath);
-                }
-        );
+                });
     }
 
     /**
@@ -66,8 +65,7 @@ public class TestParserService {
         assertThrows(InvalidContentException.class,
                 () -> {
                     parserService.parseSecondaryData(filePath);
-                }
-        );
+                });
     }
 
     /**
@@ -82,8 +80,7 @@ public class TestParserService {
         assertThrows(InvalidDataException.class,
                 () -> {
                     parserService.parseSecondaryData(filePath);
-                }
-        );
+                });
     }
 
     /**
@@ -98,8 +95,7 @@ public class TestParserService {
         assertThrows(InvalidFileException.class,
                 () -> {
                     parserService.parseSecondaryData(filePath);
-                }
-        );
+                });
     }
 
     /**
@@ -114,8 +110,7 @@ public class TestParserService {
         assertThrows(InvalidContentException.class,
                 () -> {
                     parserService.parseSecondaryData(filePath);
-                }
-        );
+                });
     }
 
     /**
@@ -130,8 +125,7 @@ public class TestParserService {
         assertThrows(InvalidDataException.class,
                 () -> {
                     parserService.parseSecondaryData(filePath);
-                }
-        );
+                });
     }
 
     /**
@@ -146,8 +140,7 @@ public class TestParserService {
         assertThrows(InvalidDataException.class,
                 () -> {
                     parserService.parseSecondaryData(filePath);
-                }
-        );
+                });
     }
 
     /**
@@ -161,8 +154,17 @@ public class TestParserService {
         assertThrows(InvalidContentException.class,
                 () -> {
                     parserService.parseSecondaryData(filePath);
-                }
-        );
+                });
+    }
+
+    @Test
+    void TestFileTooSmall() {
+        String filePath = SECONDARY_BASE + "small.csv";
+
+        assertThrows(InvalidContentException.class,
+                () -> {
+                    parserService.parseSecondaryData(filePath);
+                });
     }
 
     /**
@@ -177,8 +179,7 @@ public class TestParserService {
         assertThrows(InvalidFileException.class,
                 () -> {
                     parserService.parseSecondaryData(filePath);
-                }
-        );
+                });
 
     }
 
@@ -194,8 +195,7 @@ public class TestParserService {
         assertThrows(InvalidContentException.class,
                 () -> {
                     parserService.parseSecondaryData(filePath);
-                }
-        );
+                });
     }
 
     /**
@@ -210,8 +210,7 @@ public class TestParserService {
         assertThrows(InvalidDataException.class,
                 () -> {
                     parserService.parseSecondaryData(filePath);
-                }
-        );
+                });
     }
 
     /**

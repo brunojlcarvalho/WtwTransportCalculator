@@ -17,6 +17,7 @@ import esiih.importer.exception.InvalidFileException;
  */
 public class SecondaryDataParser {
 
+    private static final int MIN_LINES_SECONDARY = 2;
     private static final int MAX_LINES_SECONDARY = 1000;
     private final SecondaryHeaderParser headerParser = new SecondaryHeaderParser();
 
@@ -27,7 +28,7 @@ public class SecondaryDataParser {
      *
      * @param filePath the absolute or relative path to the CSV file to parse
      * @return a {@link ParsedSecondaryData} object containing the raw CSV
-     * content
+     *         content
      * @throws InvalidDataException if the file containing Exceptions
      */
     public ParsedSecondaryData parseSecondaryData(String filePath) throws InvalidDataException {
@@ -46,6 +47,9 @@ public class SecondaryDataParser {
         }
 
         String[] lines = data.split("\n");
+        if (lines.length < MIN_LINES_SECONDARY) {
+            throw new InvalidContentException("CSV file must contain a header and at least one data line.");
+        }
         if (lines.length > MAX_LINES_SECONDARY) {
             throw new InvalidContentException("CSV file is too large.");
         }
@@ -66,7 +70,7 @@ public class SecondaryDataParser {
      *
      * @param filePath the file path to validate
      * @throws InvalidDataException if the file path is empty, null, or not a
-     * CSV file
+     *                              CSV file
      */
     private void validateFilePath(String filePath) throws InvalidDataException {
         if (!filePath.toLowerCase().endsWith(".csv")) {
@@ -77,7 +81,7 @@ public class SecondaryDataParser {
     /**
      * Validates the data lines of the CSV file.
      *
-     * @param lines the array of CSV lines
+     * @param lines          the array of CSV lines
      * @param numericIndexes the indexes of fields that should be numeric
      * @throws InvalidDataException if any data line contains invalid data
      */
@@ -100,7 +104,7 @@ public class SecondaryDataParser {
      *
      * @param line the CSV line to validate
      * @throws InvalidDataException if any formatting issues or invalid
-     * characters are detected
+     *                              characters are detected
      */
     private void validateCommonLineProblems(String line)
             throws InvalidDataException {
@@ -127,7 +131,7 @@ public class SecondaryDataParser {
      * Validates numeric fields to ensure they contain valid non-negative
      * numbers.
      *
-     * @param fields the array of field strings from a CSV line
+     * @param fields         the array of field strings from a CSV line
      * @param numericIndexes the indexes of fields that should be numeric
      * @throws InvalidDataException if any numeric field contains invalid data
      */
