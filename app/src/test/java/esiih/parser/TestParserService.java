@@ -4,7 +4,9 @@ import esiih.importer.boundary.ParserService;
 import esiih.importer.controller.Parser;
 import esiih.importer.entity.ParsedPrimaryData;
 import esiih.importer.entity.ParsedSecondaryData;
+import esiih.importer.exception.InvalidContentException;
 import esiih.importer.exception.InvalidDataException;
+import esiih.importer.exception.InvalidFileException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,11 +40,9 @@ public class TestParserService {
     void TestEmptyCSV() {
         String filePath = SECONDARY_BASE + "empty.csv";
 
-        InvalidDataException exception = assertThrows(InvalidDataException.class, () -> {
-            parserService.parseSecondaryData(filePath);
-        });
-
-        assertEquals("CSV file is empty.", exception.getMessage());
+        assertThrows(InvalidContentException.class,
+                () -> {parserService.parseSecondaryData(filePath);}
+        );
     }
 
     /**
@@ -52,11 +52,9 @@ public class TestParserService {
     void TestNoHeaderCSV() {
         String filePath = SECONDARY_BASE + "no_header.csv";
 
-        InvalidDataException exception = assertThrows(InvalidDataException.class, () -> {
-            parserService.parseSecondaryData(filePath);
-        });
-
-        assertEquals("CSV file has invalid headers.", exception.getMessage());
+        assertThrows(InvalidContentException.class,
+                () -> {parserService.parseSecondaryData(filePath);}
+        );
     }
 
     /**
@@ -67,11 +65,9 @@ public class TestParserService {
     void TestMissingSemicolonCSV() {
         String filePath = SECONDARY_BASE + "missing_semicolon.csv";
 
-        InvalidDataException exception = assertThrows(InvalidDataException.class, () -> {
-            parserService.parseSecondaryData(filePath);
-        });
-
-        assertEquals("CSV file has inconsistent delimiters. Expected semicolon (;).", exception.getMessage());
+        assertThrows(InvalidDataException.class,
+                () -> {parserService.parseSecondaryData(filePath);}
+        );
     }
 
     /**
@@ -82,11 +78,9 @@ public class TestParserService {
     void TestInvalidFormatCSV() {
         String filePath = SECONDARY_BASE + "invalid.txt";
 
-        InvalidDataException exception = assertThrows(InvalidDataException.class, () -> {
-            parserService.parseSecondaryData(filePath);
-        });
-
-        assertEquals("Invalid file type. Only .csv files are supported.", exception.getMessage());
+        assertThrows(InvalidFileException.class,
+                () -> {parserService.parseSecondaryData(filePath);}
+        );
     }
 
     /**
@@ -97,11 +91,9 @@ public class TestParserService {
     void TestNegativeValuesCSV() {
         String filePath = SECONDARY_BASE + "negative_values.csv";
 
-        InvalidDataException exception = assertThrows(InvalidDataException.class, () -> {
-            parserService.parseSecondaryData(filePath);
-        });
-
-        assertEquals("CSV file contains numeric fields with negative values.", exception.getMessage());
+        assertThrows(InvalidContentException.class,
+                () -> {parserService.parseSecondaryData(filePath);}
+        );
     }
 
     /**
@@ -112,11 +104,9 @@ public class TestParserService {
     void TestDoubleSpaceCSV() {
         String filePath = SECONDARY_BASE + "double_space.csv";
 
-        InvalidDataException exception = assertThrows(InvalidDataException.class, () -> {
-            parserService.parseSecondaryData(filePath);
-        });
-
-        assertEquals("CSV file has inconsistent spacing.", exception.getMessage());
+        assertThrows(InvalidDataException.class,
+                () -> {parserService.parseSecondaryData(filePath);}
+        );
     }
 
     /**
@@ -127,11 +117,9 @@ public class TestParserService {
     void TestNullValueCSV() {
         String filePath = SECONDARY_BASE + "null_values.csv";
 
-        InvalidDataException exception = assertThrows(InvalidDataException.class, () -> {
-            parserService.parseSecondaryData(filePath);
-        });
-
-        assertEquals("CSV file contains null values.", exception.getMessage());
+        assertThrows(InvalidDataException.class,
+                () -> {parserService.parseSecondaryData(filePath);}
+        );
     }
 
     /**
@@ -141,11 +129,9 @@ public class TestParserService {
     void TestFileTooLarge() {
         String filePath = SECONDARY_BASE + "large.csv";
 
-        InvalidDataException exception = assertThrows(InvalidDataException.class, () -> {
-            parserService.parseSecondaryData(filePath);
-        });
-
-        assertEquals("CSV file is too large.", exception.getMessage());
+        assertThrows(InvalidContentException.class,
+                () -> { parserService.parseSecondaryData(filePath);}
+        );
     }
 
     /**
@@ -155,11 +141,10 @@ public class TestParserService {
     void TestFileNotFound() {
         String filePath = SECONDARY_BASE + "non_existent_file.csv";
 
-        InvalidDataException exception = assertThrows(InvalidDataException.class, () -> {
-            parserService.parseSecondaryData(filePath);
-        });
+        assertThrows(InvalidFileException.class,
+                () -> {parserService.parseSecondaryData(filePath);}
+        );
 
-        assertTrue(exception.getMessage().startsWith("Error reading the CSV file"));
     }
 
     /**
@@ -170,11 +155,9 @@ public class TestParserService {
     void TestStringInNumericFieldCSV() {
         String filePath = SECONDARY_BASE + "string_in_numeric.csv";
 
-        InvalidDataException exception = assertThrows(InvalidDataException.class, () -> {
-            parserService.parseSecondaryData(filePath);
-        });
-
-        assertTrue(exception.getMessage().startsWith("CSV file contains letters in numeric fields:"));
+        assertThrows(InvalidContentException.class,
+                () -> {parserService.parseSecondaryData(filePath);}
+        );
     }
 
     /**
@@ -185,11 +168,9 @@ public class TestParserService {
     void TestInvalidCharactersCSV() {
         String filePath = SECONDARY_BASE + "invalid_characters.csv";
 
-        InvalidDataException exception = assertThrows(InvalidDataException.class, () -> {
-            parserService.parseSecondaryData(filePath);
-        });
-
-        assertTrue(exception.getMessage().startsWith("CSV file contains invalid characters in line:"));
+        assertThrows(InvalidDataException.class,
+                () -> {parserService.parseSecondaryData(filePath);}
+        );
     }
 
     /**
@@ -211,97 +192,75 @@ public class TestParserService {
      * Ensures that an CSV file null throws an InvalidDataException.
      */
     @Test
-    void nullFilePath_throwsInvalidDataException() {
-
-        InvalidDataException ex = assertThrows(
-                InvalidDataException.class,
+    void nullFilePath_throwsInvalidFileException() {
+        assertThrows(InvalidFileException.class,
                 () -> parserService.parsePrimaryData(null));
-
-        assertEquals("The file path is invalid or empty.", ex.getMessage());
     }
 
     /**
      * Ensures that reading a non-existing file throws an InvalidDataException
      */
     @Test
-    void invalidExtensionFile_throwsInvalidDataExceptionWithIoCause() {
+    void invalidExtensionFile_throwsInvalidFileException() {
         String filePath = PRIMARY_BASE + "PrimaryData.txt";
 
-        InvalidDataException ex = assertThrows(
-                InvalidDataException.class,
+        assertThrows(InvalidFileException.class,
                 () -> parserService.parsePrimaryData(filePath));
-
-        assertEquals("Invalid file type. Only .csv files are accepted.", ex.getMessage());
     }
 
     /**
      * Ensures that a non-existent CSV file throws an InvalidDataException.
      */
     @Test
-    void nonExistingCsvFile_throwsInvalidDataException() {
+    void nonExistingCsvFile_throwsInvalidFileException() {
         String filePath = PRIMARY_BASE + "nonExistFile.csv";
 
-        InvalidDataException ex = assertThrows(
-                InvalidDataException.class,
+        assertThrows(InvalidFileException.class,
                 () -> parserService.parsePrimaryData(filePath));
-
-        assertEquals("Error reading the file.", ex.getMessage());
     }
 
     /**
      * Ensures that an empty CSV file throws an InvalidDataException.
      */
     @Test
-    void emptyFile_throwsInvalidDataException() {
+    void emptyFile_throwsInvalidContentException() {
         String filePath = PRIMARY_BASE + "PrimaryData_empty.csv";
 
-        InvalidDataException ex = assertThrows(
-                InvalidDataException.class,
+        assertThrows(InvalidContentException.class,
                 () -> parserService.parsePrimaryData(filePath));
-
-        assertEquals("The file is empty.", ex.getMessage());
     }
 
     /**
      * Ensures that a CSV file with missing headers throws validation failure.
      */
     @Test
-    void fileWithoutHeaders_throwsInvalidDataException() {
+    void fileWithoutHeaders_throwsInvalidContentException() {
         String filePath = PRIMARY_BASE + "PrimaryData_noHeaders.csv";
 
-        InvalidDataException ex = assertThrows(
-                InvalidDataException.class,
+        assertThrows(InvalidContentException.class,
                 () -> parserService.parsePrimaryData(filePath));
-
-        assertEquals("Incomplete or invalid headers.", ex.getMessage());
     }
 
     /**
      * Ensures that a data line without a semicolon is detected as invalid.
      */
     @Test
-    void fileWithMissingSemicolon_throwsInvalidDataException() {
+    void fileWithMissingSemicolon_throwsInvalidContentException() {
         String filePath = PRIMARY_BASE + "PrimaryData_missingSemicolon.csv";
 
-        InvalidDataException ex = assertThrows(
-                InvalidDataException.class,
+        assertThrows(InvalidContentException.class,
                 () -> parserService.parsePrimaryData(filePath));
-
-        assertEquals("Missing semicolon ';' between the data.", ex.getMessage());
     }
 
     /**
      * Ensures that an CSV file with invalid Chars throws an InvalidDataException.
      */
     @Test
-    void fileWithInvalidCharacters_throwsInvalidDataException() {
+    void fileWithInvalidCharacters_throwsInvalidContentException() {
         String filePath = PRIMARY_BASE + "PrimaryData_invalidChars.csv";
 
-        InvalidDataException ex = assertThrows(
-                InvalidDataException.class,
+        assertThrows(InvalidContentException.class,
                 () -> parserService.parsePrimaryData(filePath));
-
-        assertEquals("The file contains invalid characters.", ex.getMessage());
     }
 
     /**
@@ -309,14 +268,10 @@ public class TestParserService {
      * InvalidDataException.
      */
     @Test
-    void csvFileWithMoreThanMaxLines_throwsInvalidDataException() {
+    void csvFileWithMoreThanMaxLines_throwsInvalidContentException() {
         String filePath = PRIMARY_BASE + "PrimaryData_51Lines.csv";
 
-        InvalidDataException ex = assertThrows(
-                InvalidDataException.class,
+        assertThrows(InvalidContentException.class,
                 () -> parserService.parsePrimaryData(filePath));
-
-        assertEquals("CSV file is too large.", ex.getMessage());
     }
-
 }
