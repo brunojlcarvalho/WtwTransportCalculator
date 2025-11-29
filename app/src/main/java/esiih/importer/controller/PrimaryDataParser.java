@@ -32,6 +32,7 @@ public class PrimaryDataParser implements PrimaryParserService {
      * invalid
      * @throws InvalidFileException if reading the file fails
      */
+    @Override
     public ParsedPrimaryData parsePrimaryData(String filePath) throws InvalidDataException {
         validateFilePath(filePath);
 

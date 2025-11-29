@@ -1,17 +1,20 @@
 package esiih.modeler.exception;
 
+/**
+ * Thrown to indicate that the parsed primary data is invalid.
+ */
 public class InvalidParsePrimaryDataException extends Exception {
 
     /**
-     * Constructs a new {@code InvalidParseDataException} with no detail
+     * Constructs a new {@code InvalidParsePrimaryDataException} with no detail
      * message.
      */
     public InvalidParsePrimaryDataException() {
     }
 
     /**
-     * Constructs a new {@code InvalidParseDataException} with the specified
-     * detail message.
+     * Constructs a new {@code InvalidParsePrimaryDataException} with the
+     * specified detail message.
      *
      * @param message the detail message
      */
@@ -20,8 +23,8 @@ public class InvalidParsePrimaryDataException extends Exception {
     }
 
     /**
-     * Constructs a new {@code InvalidParseDataException} with the specified
-     * detail message and cause.
+     * Constructs a new {@code InvalidParsePrimaryDataException} with the
+     * specified detail message and cause.
      *
      * @param message the detail message
      * @param cause the cause (which is saved for later retrieval by the
@@ -32,9 +35,10 @@ public class InvalidParsePrimaryDataException extends Exception {
     }
 
     /**
-     * Constructs a new {@code InvalidParseDataException} with the specified
-     * cause and a detail message of (cause==null ? null : cause.toString())
-     * (which typically contains the class and detail message of cause).
+     * Constructs a new {@code InvalidParsePrimaryDataException} with the
+     * specified cause and a detail message of (cause==null ? null :
+     * cause.toString()) (which typically contains the class and detail message
+     * of cause).
      *
      * @param cause the cause (which is saved for later retrieval by the
      * {@link #getCause()} method)
@@ -44,9 +48,9 @@ public class InvalidParsePrimaryDataException extends Exception {
     }
 
     /**
-     * Constructs a new {@code InvalidParseDataException} with the specified
-     * detail message, cause, suppression enabled or disabled, and writable
-     * stack trace enabled or disabled.
+     * Constructs a new {@code InvalidParsePrimaryDataException} with the
+     * specified detail message, cause, suppression enabled or disabled, and
+     * writable stack trace enabled or disabled.
      *
      * @param message the detail message
      * @param cause the cause (which is saved for later retrieval by the
