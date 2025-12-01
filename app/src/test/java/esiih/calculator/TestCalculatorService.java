@@ -1,5 +1,14 @@
 package esiih.calculator;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import esiih.calculator.boundary.CalculatorService;
 import esiih.calculator.controller.Calculator;
 import esiih.calculator.exception.InvalidCalculationException;
@@ -11,13 +20,6 @@ import esiih.modeler.entity.TransportOperation;
 import esiih.modeler.entity.enums.FuelType;
 import esiih.modeler.entity.enums.Mode;
 import esiih.modeler.entity.enums.Unit;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class TestCalculatorService {
 
@@ -33,6 +35,7 @@ public class TestCalculatorService {
     }
 
     /**
+     * Test the {@link CalculatorService#calculateGEE(TransportChain, List)}
      * Ensures that a null TransportChain throws a NullPointerException.
      */
     @Test
@@ -43,6 +46,7 @@ public class TestCalculatorService {
     }
 
     /**
+     * Test the {@link CalculatorService#calculateGEE(TransportChain, List)}
      * Ensures that an empty TransportChain (with no elements) throws an
      * InvalidCalculationException.
      */
@@ -56,6 +60,7 @@ public class TestCalculatorService {
     }
 
     /**
+     * Test the {@link CalculatorService#calculateGEE(TransportChain, List)}
      * Ensures that a null EmissionFactors list throws a NullPointerException.
      */
     @Test
@@ -71,7 +76,9 @@ public class TestCalculatorService {
     }
 
     /**
-     * Ensures that an empty EmissionFactors list throws an InvalidCalculationException.
+     * Test the {@link CalculatorService#calculateGEE(TransportChain, List)}
+     * Ensures that an empty EmissionFactors list throws an
+     * InvalidCalculationException.
      */
     @Test
     void emptyEmissionFactors_throwsInvalidCalculationException() {
@@ -88,6 +95,7 @@ public class TestCalculatorService {
     }
 
     /**
+     * Test the {@link CalculatorService#calculateGEE(TransportChain, List)}
      * Ensures that a TransportOperation without a transport mode throws an
      * InvalidCalculationException.
      */
@@ -109,6 +117,7 @@ public class TestCalculatorService {
     }
 
     /**
+     * Test the {@link CalculatorService#calculateGEE(TransportChain, List)}
      * Ensures that a TransportOperation without a fuel type throws an
      * InvalidCalculationException.
      */
@@ -130,6 +139,7 @@ public class TestCalculatorService {
     }
 
     /**
+     * Test the {@link CalculatorService#calculateGEE(TransportChain, List)}
      * Ensures that a HubOperation without a hub mode throws an
      * InvalidCalculationException.
      */
@@ -154,6 +164,7 @@ public class TestCalculatorService {
     }
 
     /**
+     * Test the {@link CalculatorService#calculateGEE(TransportChain, List)}
      * Ensures that a HubOperation without an energy source throws an
      * InvalidCalculationException.
      */
@@ -178,6 +189,7 @@ public class TestCalculatorService {
     }
 
     /**
+     * Test the {@link CalculatorService#calculateGEE(TransportChain, List)}
      * Ensures that a missing EmissionFactor for a TransportOperation throws an
      * InvalidCalculationException.
      */
@@ -192,7 +204,6 @@ public class TestCalculatorService {
         to.setMaxCapacityTon(20.0);
         transportChain.addElement(to);
 
-        // Add a factor for a different mode/fuel combination
         EmissionFactor factor = new EmissionFactor(Mode.RAIL, FuelType.ELECTRICITY, 10.0, 0.0, 0.5, 0.1,
                 Unit.KG_CO2E_PER_TKM, 0.0);
         emissionFactors.add(factor);
@@ -206,6 +217,7 @@ public class TestCalculatorService {
     }
 
     /**
+     * Test the {@link CalculatorService#calculateGEE(TransportChain, List)}
      * Ensures that a missing EmissionFactor for a HubOperation throws an
      * InvalidCalculationException.
      */
@@ -218,7 +230,6 @@ public class TestCalculatorService {
         ho.setEnergyConsumed(100.0);
         transportChain.addElement(ho);
 
-        // Add a factor for a different mode/fuel combination
         EmissionFactor factor = new EmissionFactor(Mode.ROAD, FuelType.DIESEL, 10.0, 0.0, 0.5, 0.1,
                 Unit.KG_CO2E_PER_TKM, 0.0);
         emissionFactors.add(factor);
@@ -232,8 +243,9 @@ public class TestCalculatorService {
     }
 
     /**
-     * Ensures that a valid TransportOperation with KG_CO2E_PER_TKM unit calculates
-     * emissions correctly.
+     * Test the {@link CalculatorService#calculateGEE(TransportChain, List)}
+     * Ensures that a valid TransportOperation with KG_CO2E_PER_TKM unit
+     * calculates emissions correctly.
      */
     @Test
     void validTransportOperationWithTKMUnit_calculatesEmissionsCorrectly() throws InvalidCalculationException {
@@ -252,7 +264,6 @@ public class TestCalculatorService {
 
         calculatorService.calculateGEE(transportChain, emissionFactors);
 
-
         assertTrue(to.getEmissionTTW() > 0, "TTW emissions should be calculated");
         assertTrue(to.getEmissionWTT() > 0, "WTT emissions should be calculated");
         assertTrue(to.getEmissionWTW() > 0, "WTW emissions should be calculated");
@@ -261,6 +272,7 @@ public class TestCalculatorService {
     }
 
     /**
+     * Test the {@link CalculatorService#calculateGEE(TransportChain, List)}
      * Ensures that a valid HubOperation calculates emissions correctly.
      */
     @Test
@@ -278,18 +290,13 @@ public class TestCalculatorService {
 
         calculatorService.calculateGEE(transportChain, emissionFactors);
 
-        // Expected calculations:
-        // totalEnergyConsumed = 100 * 2 = 200 kWh
-        // TTW = 200 * 0.0 = 0.0
-        // WTT = 200 * 0.35 = 70.0
-        // WTW = 0.0 + 70.0 = 70.0
-
         assertEquals(0.0, ho.getEmissionTTW(), 0.01, "TTW should be 0 for electricity");
         assertEquals(70.0, ho.getEmissionWTT(), 0.01, "WTT should be 70.0");
         assertEquals(70.0, ho.getEmissionWTW(), 0.01, "WTW should be 70.0");
     }
 
     /**
+     * Test the {@link CalculatorService#calculateGEE(TransportChain, List)}
      * Ensures that a TransportChain with multiple elements calculates total WTW
      * correctly.
      */
@@ -326,6 +333,7 @@ public class TestCalculatorService {
     }
 
     /**
+     * Test the {@link CalculatorService#calculateGEE(TransportChain, List)}
      * Ensures that a TransportChain calculates intensity correctly.
      */
     @Test
@@ -345,8 +353,6 @@ public class TestCalculatorService {
 
         calculatorService.calculateGEE(transportChain, emissionFactors);
 
-        // Activity = payload * distanceLoaded = 10 * 100 = 1000 t.km
-        // Intensity = totalWTW / activity
         double expectedIntensity = transportChain.getTotalWTW() / 1000.0;
 
         assertTrue(transportChain.getIntensity() > 0, "Intensity should be calculated");
@@ -355,6 +361,7 @@ public class TestCalculatorService {
     }
 
     /**
+     * Test the {@link CalculatorService#calculateGEE(TransportChain, List)}
      * Ensures that a TransportChain with zero activity has zero intensity.
      */
     @Test
@@ -378,8 +385,9 @@ public class TestCalculatorService {
     }
 
     /**
-     * Ensures that a TransportOperation with fuel-based unit (not TKM) calculates
-     * emissions using consumption.
+     * Test the {@link CalculatorService#calculateGEE(TransportChain, List)}
+     * Ensures that a TransportOperation with fuel-based unit (not TKM)
+     * calculates emissions using consumption.
      */
     @Test
     void transportOperationWithFuelBasedUnit_calculatesEmissionsUsingConsumption() throws InvalidCalculationException {
@@ -399,18 +407,13 @@ public class TestCalculatorService {
 
         calculatorService.calculateGEE(transportChain, emissionFactors);
 
-        // Expected calculations:
-        // consumptionTotal = 50.0 liters
-        // TTW = 50.0 * 3.16 = 158.0
-        // WTT = 50.0 * 0.38 = 19.0
-        // WTW = 158.0 + 19.0 = 177.0
-
         assertEquals(158.0, to.getEmissionTTW(), 0.01, "TTW should be calculated from consumption");
         assertEquals(19.0, to.getEmissionWTT(), 0.01, "WTT should be calculated from consumption");
         assertEquals(177.0, to.getEmissionWTW(), 0.01, "WTW should equal TTW + WTT");
     }
 
     /**
+     * Test the {@link CalculatorService#calculateGEE(TransportChain, List)}
      * Ensures that a TransportOperation uses consumption per t.km when liters
      * consumed is not provided.
      */
@@ -423,7 +426,7 @@ public class TestCalculatorService {
         to.setDistanceEmptyKm(0.0);
         to.setPayloadTon(10.0);
         to.setMaxCapacityTon(10.0);
-        to.setConsumptionLitTKm(5.0); // 5 L/100tkm
+        to.setConsumptionLitTKm(5.0);
         transportChain.addElement(to);
 
         EmissionFactor factor = new EmissionFactor(Mode.ROAD, FuelType.DIESEL, 10.0, 0.0, 3.16, 0.38,
@@ -432,13 +435,14 @@ public class TestCalculatorService {
 
         calculatorService.calculateGEE(transportChain, emissionFactors);
 
-
         assertTrue(to.getEmissionTTW() > 0, "TTW should be calculated from consumption per t.km");
         assertTrue(to.getEmissionWTT() > 0, "WTT should be calculated from consumption per t.km");
     }
 
     /**
-     * Ensures that a TransportOperation uses average consumption when no specific consumption is provided.
+     * Test the {@link CalculatorService#calculateGEE(TransportChain, List)}
+     * Ensures that a TransportOperation uses average consumption when no
+     * specific consumption is provided.
      */
     @Test
     void transportOperationWithAverageConsumption_calculatesEmissionsCorrectly() throws InvalidCalculationException {
@@ -454,7 +458,7 @@ public class TestCalculatorService {
         transportChain.addElement(to);
 
         EmissionFactor factor = new EmissionFactor(Mode.ROAD, FuelType.DIESEL, 10.0, 0.0, 3.16, 0.38,
-                Unit.LITERS, 2.5); // averageConsumption = 2.5 L/100tkm
+                Unit.LITERS, 2.5);
         emissionFactors.add(factor);
 
         calculatorService.calculateGEE(transportChain, emissionFactors);
@@ -464,7 +468,9 @@ public class TestCalculatorService {
     }
 
     /**
-     * Ensures that a TransportOperation with zero capacity handles loadFactor correctly.
+     * Test the {@link CalculatorService#calculateGEE(TransportChain, List)}
+     * Ensures that a TransportOperation with zero capacity handles loadFactor
+     * correctly.
      */
     @Test
     void transportOperationWithZeroCapacity_calculatesEmissionsCorrectly() throws InvalidCalculationException {
@@ -474,7 +480,7 @@ public class TestCalculatorService {
         to.setDistanceLoadedKm(100.0);
         to.setDistanceEmptyKm(0.0);
         to.setPayloadTon(10.0);
-        to.setMaxCapacityTon(0.0); // Zero capacity
+        to.setMaxCapacityTon(0.0);
         transportChain.addElement(to);
 
         EmissionFactor factor = new EmissionFactor(Mode.ROAD, FuelType.DIESEL, 10.0, 0.0, 0.5, 0.1,
@@ -483,21 +489,22 @@ public class TestCalculatorService {
 
         calculatorService.calculateGEE(transportChain, emissionFactors);
 
-        // With zero capacity, loadFactor should be 0, so effectiveLoad = 0, activity = 0
         assertEquals(0.0, to.getEmissionTTW(), 0.01, "TTW should be 0 when capacity is 0");
         assertEquals(0.0, to.getEmissionWTT(), 0.01, "WTT should be 0 when capacity is 0");
         assertEquals(0.0, to.getEmissionWTW(), 0.01, "WTW should be 0 when capacity is 0");
     }
 
     /**
-     * Ensures that a HubOperation with zero duration calculates emissions correctly.
+     * Test the {@link CalculatorService#calculateGEE(TransportChain, List)}
+     * Ensures that a HubOperation with zero duration calculates emissions
+     * correctly.
      */
     @Test
     void hubOperationWithZeroDuration_calculatesEmissionsCorrectly() throws InvalidCalculationException {
         HubOperation ho = new HubOperation("HO-1");
         ho.setHubMode(Mode.HUB);
         ho.setEnergySource(FuelType.ELECTRICITY);
-        ho.setDurationHours(0.0); // Zero duration
+        ho.setDurationHours(0.0);
         ho.setEnergyConsumed(100.0);
         transportChain.addElement(ho);
 
@@ -507,20 +514,20 @@ public class TestCalculatorService {
 
         calculatorService.calculateGEE(transportChain, emissionFactors);
 
-        // With zero duration, totalEnergyConsumed should be 0
         assertEquals(0.0, ho.getEmissionTTW(), 0.01, "TTW should be 0 when duration is 0");
         assertEquals(0.0, ho.getEmissionWTT(), 0.01, "WTT should be 0 when duration is 0");
         assertEquals(0.0, ho.getEmissionWTW(), 0.01, "WTW should be 0 when duration is 0");
     }
 
     /**
-     * Ensures that an unsupported element type throws an InvalidCalculationException.
+     * Test the {@link CalculatorService#calculateGEE(TransportChain, List)}
+     * Ensures that an unsupported element type throws an
+     * InvalidCalculationException.
      */
     @Test
     void unsupportedElementType_throwsInvalidCalculationException() {
-        // Create an unsupported element type by using a custom anonymous class
+
         TransportChainElement unsupportedElement = new TransportChainElement("UNSUPPORTED-1") {
-            // Anonymous class that extends TransportChainElement but is not TO or HO
         };
         transportChain.addElement(unsupportedElement);
 
@@ -536,15 +543,16 @@ public class TestCalculatorService {
     }
 
     /**
-     * Ensures that a TransportChain with null elements list throws an InvalidCalculationException.
+     * Test the {@link CalculatorService#calculateGEE(TransportChain, List)}
+     * Ensures that a TransportChain with null elements list throws an
+     * InvalidCalculationException.
      */
     @Test
     void transportChainWithNullElements_throwsInvalidCalculationException() {
-        // Create a TransportChain subclass that returns null elements
         TransportChain chainWithNullElements = new TransportChain("TC-NULL", "Test") {
             @Override
             public java.util.List<TransportChainElement> getElements() {
-                return null; // Override to return null for testing
+                return null;
             }
         };
 
