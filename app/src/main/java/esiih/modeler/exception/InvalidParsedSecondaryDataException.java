@@ -1,16 +1,19 @@
 package esiih.modeler.exception;
 
+/**
+ * Thrown to indicate that the parsed secondary data is invalid.
+ */
 public class InvalidParsedSecondaryDataException extends Exception {
 
     /**
-     * Constructs a new {@code InvalidParsedEmissionsDataException} with no
+     * Constructs a new {@code InvalidParsedSecondaryDataException} with no
      * detail message.
      */
     public InvalidParsedSecondaryDataException() {
     }
 
     /**
-     * Constructs a new {@code InvalidParsedEmissionsDataException} with the
+     * Constructs a new {@code InvalidParsedSecondaryDataException} with the
      * specified detail message.
      *
      * @param message the detail message
@@ -20,7 +23,7 @@ public class InvalidParsedSecondaryDataException extends Exception {
     }
 
     /**
-     * Constructs a new {@code InvalidParsedEmissionsDataException} with the
+     * Constructs a new {@code InvalidParsedSecondaryDataException} with the
      * specified detail message and cause.
      *
      * @param message the detail message
@@ -32,7 +35,7 @@ public class InvalidParsedSecondaryDataException extends Exception {
     }
 
     /**
-     * Constructs a new {@code InvalidParsedEmissionsDataException} with the
+     * Constructs a new {@code InvalidParsedSecondaryDataException} with the
      * specified cause and a detail message of (cause==null ? null :
      * cause.toString()) (which typically contains the class and detail message
      * of cause).
@@ -45,7 +48,7 @@ public class InvalidParsedSecondaryDataException extends Exception {
     }
 
     /**
-     * Constructs a new {@code InvalidParsedEmissionsDataException} with the
+     * Constructs a new {@code InvalidParsedSecondaryDataException} with the
      * specified detail message, cause, suppression enabled or disabled, and
      * writable stack trace enabled or disabled.
      *

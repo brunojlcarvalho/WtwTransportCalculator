@@ -11,8 +11,6 @@ import esiih.modeler.entity.HubOperation;
 import esiih.modeler.entity.TransportChain;
 import esiih.modeler.entity.TransportChainElement;
 import esiih.modeler.entity.TransportOperation;
-import esiih.modeler.entity.enums.FuelType;
-import esiih.modeler.entity.enums.Mode;
 import esiih.modeler.exception.InvalidParsePrimaryDataException;
 import esiih.modeler.exception.InvalidParsedSecondaryDataException;
 
@@ -45,16 +43,18 @@ public class Modeler implements ModelerService {
 
         for (int i = 1; i < lines.length; i++) {
             String line = lines[i].trim();
-            if (line.isEmpty())
+            if (line.isEmpty()) {
                 continue;
+            }
 
             String[] values = line.split(";", -1);
             String id = values[0];
             String type = values[1];
 
             TransportChainElement element = createElementFromValues(id, type, values, i + 1);
-            if (element != null)
+            if (element != null) {
                 transportChain.addElement(element);
+            }
 
         }
 
@@ -63,35 +63,39 @@ public class Modeler implements ModelerService {
 
     /**
      * Validates the state of the {@link ParsedPrimaryData} instance before
-     * processing it. Ensures the object is not null and that its content is non-empty.
+     * processing it. Ensures the object is not null and that its content is
+     * non-empty.
      *
-     * @param parsedData
-     * @throws InvalidParsePrimaryDataException
+     * @param parsedData the parsed primary data to validate
+     * @throws InvalidParsePrimaryDataException if the parsed data is null or
+     * its content is empty
      */
     private void validateParsedData(ParsedPrimaryData parsedData)
             throws InvalidParsePrimaryDataException {
 
-        if (parsedData == null)
+        if (parsedData == null) {
             throw new InvalidParsePrimaryDataException("ParsedPrimaryData is null");
-
+        }
 
         String primaryString = parsedData.getPrimaryDataString();
 
-        if (primaryString == null || primaryString.isEmpty())
+        if (primaryString == null || primaryString.isEmpty()) {
             throw new InvalidParsePrimaryDataException("ParsedPrimaryData string is null or empty");
+        }
 
     }
 
     /**
-     * Creates the correct {@link TransportChainElement} subtype based on the CSV
-     * Operacao type. "TO" produces a {@link TransportOperation} and "HO" produces a {@link HubOperation}.
+     * Creates the correct {@link TransportChainElement} subtype based on the
+     * CSV Operacao type. "TO" produces a {@link TransportOperation} and "HO"
+     * produces a {@link HubOperation}.
      *
-     * @param id
-     * @param type
-     * @param values
-     * @param lineNumber
-     * @return
-     * @throws InvalidParsePrimaryDataException
+     * @param id the element ID
+     * @param type the element type ("TO" or "HO")
+     * @param values the CSV values for the element
+     * @param lineNumber the line number in the CSV file (for error reporting)
+     * @return the created TransportChainElement
+     * @throws InvalidParsePrimaryDataException if parsing fails
      */
     private TransportChainElement createElementFromValues(String id, String type, String[] values, int lineNumber) throws InvalidParsePrimaryDataException {
 
@@ -100,7 +104,6 @@ public class Modeler implements ModelerService {
         } else if ("HO".equalsIgnoreCase(type)) {
             return modelHubOperation.fromCsv(id, values);
         }
-        // se não for nenhum tipo conhecido, neste momento ignoramos
         return null;
     }
 
@@ -136,10 +139,12 @@ public class Modeler implements ModelerService {
     }
 
     /**
-     * Validates the parsed secondary CSV wrapper to ensure it contains usable data.
+     * Validates the parsed secondary CSV wrapper to ensure it contains usable
+     * data.
      *
-     * @param parsedData
-     * @throws InvalidParsedSecondaryDataException
+     * @param parsedData the parsed secondary data to validate
+     * @throws InvalidParsedSecondaryDataException if the parsed data is null or
+     * its content is empty
      */
     private void validateParsedSecondaryData(ParsedSecondaryData parsedData)
             throws InvalidParsedSecondaryDataException {
