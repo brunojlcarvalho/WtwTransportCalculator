@@ -9,6 +9,9 @@ import java.util.List;
  */
 public class TransportChain {
 
+    private final String id;
+    private final String description;
+
     private final List<TransportChainElement> elements;
     private double totalWTW;
     private double intensity;
@@ -16,11 +19,21 @@ public class TransportChain {
     /**
      * Constructor for TransportChain.
      *
-     * @param id Unique identifier for the transport chain.
+     * @param id          Unique identifier for the transport chain.
      * @param description Description of the transport chain.
      */
     public TransportChain(String id, String description) {
+        this.id = id;
+        this.description = description;
         this.elements = new ArrayList<>();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     /**
