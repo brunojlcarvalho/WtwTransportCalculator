@@ -12,6 +12,9 @@ import esiih.importer.exception.InvalidContentException;
 import esiih.importer.exception.InvalidDataException;
 import esiih.importer.exception.InvalidFileException;
 
+/**
+ * Test class for the {@link SecondaryDataParser} class.
+ */
 public class TestSecondaryParserService {
 
     private static final String SECONDARY_BASE = "src/test/resources/secondary_data/";

@@ -21,6 +21,9 @@ import esiih.modeler.exception.InvalidParsePrimaryDataException;
 import esiih.modeler.exception.InvalidParsedSecondaryDataException;
 import esiih.modeler.exception.InvalidPrimaryValueException;
 
+/**
+ * Test class for the {@link Modeler} class.
+ */
 public class TestModelerService {
 
     private Modeler modeler;

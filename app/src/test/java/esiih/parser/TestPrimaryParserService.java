@@ -13,6 +13,9 @@ import esiih.importer.exception.InvalidContentException;
 import esiih.importer.exception.InvalidDataException;
 import esiih.importer.exception.InvalidFileException;
 
+/**
+ * Test class for the {@link PrimaryDataParser} class.
+ */
 public class TestPrimaryParserService {
 
     private static final String PRIMARY_BASE = "src/test/resources/primary_data/";
