@@ -7,8 +7,8 @@ import java.util.List;
 import esiih.calculator.boundary.CalculatorService;
 import esiih.calculator.controller.Calculator;
 import esiih.calculator.exception.InvalidCalculationException;
-import esiih.exporter.boundary.ExporterService; // Importar Interface
-import esiih.exporter.controller.Exporter; // Importar Implementação
+import esiih.exporter.boundary.ExporterService;
+import esiih.exporter.controller.Exporter;
 import esiih.importer.boundary.PrimaryParserService;
 import esiih.importer.boundary.SecondaryParserService;
 import esiih.importer.controller.PrimaryDataParser;
@@ -33,7 +33,7 @@ public class App {
         // Caminhos de entrada e saída
         String secondaryDataFilePath = "app/src/main/resources/secondary_data.csv";
         String primaryDataFilePath = "app/src/main/resources/primary_data.csv";
-        String outputFilePath = "report_final.csv"; // Nome do ficheiro a exportar
+        String outputFilePath = "report_final.csv";
 
         try {
             // 1. Instanciar Serviços
@@ -41,7 +41,7 @@ public class App {
             PrimaryParserService primaryParser = new PrimaryDataParser();
             ModelerService modeler = new Modeler();
             CalculatorService calculator = new Calculator();
-            ExporterService exporter = new Exporter(); // Instanciar o Exporter
+            ExporterService exporter = new Exporter();
 
             System.out.println(">>> Initiating calculation of GEE emissions <<<");
 
@@ -68,11 +68,7 @@ public class App {
             // 5. EXPORTAR (NOVO PASSO)
             System.out.println("\n[4] Exporting Results to CSV...");
 
-            // Criar lista porque o Exporter aceita List<TransportChain>
-            List<TransportChain> chainsToExport = new ArrayList<>();
-            chainsToExport.add(transportChain);
-
-            exporter.exportTransportChains(chainsToExport, outputFilePath);
+            exporter.exportTransportChain(transportChain, outputFilePath);
             System.out.println("    -> Success! File created at: " + outputFilePath);
 
             // 6. Imprimir na consola (opcional, para debug rápido)

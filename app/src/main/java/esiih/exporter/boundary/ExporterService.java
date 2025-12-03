@@ -2,8 +2,18 @@ package esiih.exporter.boundary;
 
 import esiih.modeler.entity.TransportChain;
 import java.io.IOException;
-import java.util.List;
 
+/**
+ * Exporter Service Interface
+ */
 public interface ExporterService {
-    void exportTransportChains(List<TransportChain> transportChains, String filePath) throws IOException;
+
+    /**
+     * Export the transport chain data to a CSV file
+     * 
+     * @param transportChain
+     * @param filePath
+     * @throws IOException
+     */
+    void exportTransportChain(TransportChain transportChain, String filePath) throws IOException;
 }

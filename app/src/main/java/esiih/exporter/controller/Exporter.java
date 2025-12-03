@@ -9,18 +9,18 @@ import esiih.modeler.entity.TransportOperation;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 import java.util.Locale;
 
+/**
+ * Exporter Implementation
+ */
 public class Exporter implements ExporterService {
 
     private static final String SEP = ";";
     private static final String NEW_LINE = "\n";
 
-    private static final String HEADER = "Chain_ID" + SEP +
-            "Chain_Description" + SEP +
-            "TCE_ID" + SEP +
-            "TCE_Type" + SEP +
+    private static final String HEADER = "Element_ID" + SEP +
+            "Element_Type" + SEP +
             "Mode_Source" + SEP +
             "Activity_Info" + SEP +
             "WTW_kgCO2e" + SEP +
@@ -29,14 +29,18 @@ public class Exporter implements ExporterService {
             "Chain_Total_WTW" + SEP +
             "Chain_Intensity";
 
+    /**
+     * Export the transport chain data to a CSV file
+     */
     @Override
-    public void exportTransportChains(List<TransportChain> chains, String filePath) throws IOException {
+    public void exportTransportChain(TransportChain chain, String filePath) throws IOException {
 
+        // 1. Validações
         if (filePath == null || filePath.trim().isEmpty()) {
-            throw new IllegalArgumentException("Erro: O caminho do ficheiro de exportação é inválido.");
+            throw new IllegalArgumentException("Error: invalid file path.");
         }
-        if (chains == null) {
-            throw new IllegalArgumentException("Erro: A lista de dados para exportar é nula.");
+        if (chain == null) {
+            throw new IllegalArgumentException("Error: NULL transport chain.");
         }
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
@@ -44,40 +48,27 @@ public class Exporter implements ExporterService {
             writer.write(HEADER);
             writer.write(NEW_LINE);
 
-            if (chains.isEmpty()) {
+            if (chain.getElements() == null || chain.getElements().isEmpty()) {
+                writer.write(buildSummaryLine(chain));
+                writer.write(NEW_LINE);
                 return;
             }
 
-            for (TransportChain chain : chains) {
-                if (chain == null)
+            for (TransportChainElement element : chain.getElements()) {
+                if (element == null)
                     continue;
 
-                if (chain.getElements() == null || chain.getElements().isEmpty()) {
-                    writer.write(buildSummaryLine(chain));
-                    writer.write(NEW_LINE);
-                    continue;
-                }
-
-                for (TransportChainElement element : chain.getElements()) {
-                    if (element == null)
-                        continue;
-
-                    String line = buildDetailedLine(chain, element);
-                    writer.write(line);
-                    writer.write(NEW_LINE);
-                }
+                String line = buildDetailedLine(chain, element);
+                writer.write(line);
+                writer.write(NEW_LINE);
             }
         } catch (IOException e) {
-            throw new IOException(
-                    "Erro ao escrever no ficheiro: " + filePath, e);
+            throw new IOException("Error creating the file: " + filePath, e);
         }
     }
 
     private String buildDetailedLine(TransportChain chain, TransportChainElement element) {
         StringBuilder sb = new StringBuilder();
-
-        sb.append(safeStr(chain.getId())).append(SEP);
-        sb.append(safeStr(chain.getDescription())).append(SEP);
         sb.append(safeStr(element.getId())).append(SEP);
 
         if (element instanceof TransportOperation to) {
@@ -109,9 +100,7 @@ public class Exporter implements ExporterService {
     }
 
     private String buildSummaryLine(TransportChain chain) {
-        return safeStr(chain.getId()) + SEP +
-                safeStr(chain.getDescription()) + SEP +
-                "N/A" + SEP + "N/A" + SEP + "N/A" + SEP + "N/A" + SEP +
+        return "N/A" + SEP + "N/A" + SEP + "N/A" + SEP + "N/A" + SEP +
                 "0,00" + SEP + "0,00" + SEP + "0,00" + SEP +
                 fmt(chain.getTotalWTW()) + SEP +
                 fmt(chain.getIntensity());

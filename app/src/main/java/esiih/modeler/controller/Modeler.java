@@ -39,7 +39,7 @@ public class Modeler implements ModelerService {
 
         String[] lines = parsedData.getPrimaryDataString().split("\n");
 
-        TransportChain transportChain = new TransportChain("TC-1", "Transport Chain from CSV");
+        TransportChain transportChain = new TransportChain();
 
         for (int i = 1; i < lines.length; i++) {
             String line = lines[i].trim();
@@ -68,7 +68,7 @@ public class Modeler implements ModelerService {
      *
      * @param parsedData the parsed primary data to validate
      * @throws InvalidParsePrimaryDataException if the parsed data is null or
-     * its content is empty
+     *                                          its content is empty
      */
     private void validateParsedData(ParsedPrimaryData parsedData)
             throws InvalidParsePrimaryDataException {
@@ -90,14 +90,15 @@ public class Modeler implements ModelerService {
      * CSV Operacao type. "TO" produces a {@link TransportOperation} and "HO"
      * produces a {@link HubOperation}.
      *
-     * @param id the element ID
-     * @param type the element type ("TO" or "HO")
-     * @param values the CSV values for the element
+     * @param id         the element ID
+     * @param type       the element type ("TO" or "HO")
+     * @param values     the CSV values for the element
      * @param lineNumber the line number in the CSV file (for error reporting)
      * @return the created TransportChainElement
      * @throws InvalidParsePrimaryDataException if parsing fails
      */
-    private TransportChainElement createElementFromValues(String id, String type, String[] values, int lineNumber) throws InvalidParsePrimaryDataException {
+    private TransportChainElement createElementFromValues(String id, String type, String[] values, int lineNumber)
+            throws InvalidParsePrimaryDataException {
 
         if ("TO".equalsIgnoreCase(type)) {
             return modelTransportOperation.fromCsv(id, values);
@@ -115,7 +116,8 @@ public class Modeler implements ModelerService {
      * @throws InvalidParsedSecondaryDataException if the parsed data is invalid
      */
     @Override
-    public List<EmissionFactor> modelEmissionFactors(ParsedSecondaryData parsedData) throws InvalidParsedSecondaryDataException {
+    public List<EmissionFactor> modelEmissionFactors(ParsedSecondaryData parsedData)
+            throws InvalidParsedSecondaryDataException {
 
         validateParsedSecondaryData(parsedData);
 
@@ -144,7 +146,7 @@ public class Modeler implements ModelerService {
      *
      * @param parsedData the parsed secondary data to validate
      * @throws InvalidParsedSecondaryDataException if the parsed data is null or
-     * its content is empty
+     *                                             its content is empty
      */
     private void validateParsedSecondaryData(ParsedSecondaryData parsedData)
             throws InvalidParsedSecondaryDataException {
