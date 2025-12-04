@@ -29,9 +29,10 @@ public class App {
      * Main method to run the application
      */
     public static void main(String[] args) {
+        // Caminhos de entrada e saída
         String secondaryDataFilePath = "app/src/main/resources/secondary_data.csv";
         String primaryDataFilePath = "app/src/main/resources/primary_data.csv";
-        String outputFilePath = "app/src/main/reports/report_final.csv";
+        String outputFilePath = "report_final.csv";
 
         try {
             // 1. Instanciar Serviços
@@ -63,13 +64,13 @@ public class App {
             calculator.calculateGEE(transportChain, emissionFactors);
             System.out.println("    -> Calculations completed.");
 
-            // 5. Exportar
+            // 5. EXPORTAR (NOVO PASSO)
             System.out.println("\n[4] Exporting Results to CSV...");
 
             exporter.exportTransportChain(transportChain, outputFilePath);
             System.out.println("    -> Success! File created at: " + outputFilePath);
 
-            // 6. Imprimir na consola
+            // 6. Imprimir na consola (opcional, para debug rápido)
             printResults(transportChain);
 
         } catch (InvalidDataException | InvalidParsePrimaryDataException | InvalidParsedSecondaryDataException
@@ -78,7 +79,7 @@ public class App {
             System.err.println("Message: " + e.getMessage());
         } catch (IOException e) {
             System.err.println("\n ERROR (IO/Export):");
-            System.err.println("Could not write to file. Check permissions.");
+            System.err.println("Could not write to file. Check if it's open in Excel.");
             System.err.println("Message: " + e.getMessage());
         } catch (Exception e) {
             System.err.println("\n UNEXPECTED ERROR:");
