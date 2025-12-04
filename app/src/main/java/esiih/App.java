@@ -32,7 +32,7 @@ public class App {
         // Caminhos de entrada e saída
         String secondaryDataFilePath = "app/src/main/resources/secondary_data.csv";
         String primaryDataFilePath = "app/src/main/resources/primary_data.csv";
-        String outputFilePath = "report_final.csv";
+        String outputFilePath = "app/src/main/report/report_final.csv";
 
         try {
             // 1. Instanciar Serviços
