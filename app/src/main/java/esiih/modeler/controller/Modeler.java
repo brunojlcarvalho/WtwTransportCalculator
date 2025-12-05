@@ -7,10 +7,8 @@ import esiih.importer.entity.ParsedPrimaryData;
 import esiih.importer.entity.ParsedSecondaryData;
 import esiih.modeler.boundary.ModelerService;
 import esiih.modeler.entity.EmissionFactor;
-import esiih.modeler.entity.HubOperation;
 import esiih.modeler.entity.TransportChain;
 import esiih.modeler.entity.TransportChainElement;
-import esiih.modeler.entity.TransportOperation;
 import esiih.modeler.exception.InvalidParsePrimaryDataException;
 import esiih.modeler.exception.InvalidParsedSecondaryDataException;
 
@@ -62,8 +60,9 @@ public class Modeler implements ModelerService {
     }
 
     /**
-     * Validates the parsed primary CSV wrapper to ensure it contains usable data.
-     * 
+     * Validates the parsed primary CSV wrapper to ensure it contains usable
+     * data.
+     *
      * @param parsedData
      * @throws InvalidParsePrimaryDataException
      */
@@ -84,9 +83,10 @@ public class Modeler implements ModelerService {
 
     /**
      * Creates a TransportChainElement instance from the provided CSV values.
-     * 
+     *
      * @param id The element ID.
-     * @param type The element type ("TO" for TransportOperation, "HO" for HubOperation).
+     * @param type The element type ("TO" for TransportOperation, "HO" for
+     * HubOperation).
      * @param values The CSV row values.
      * @param lineNumber The line number in the CSV file.
      * @return The created TransportChainElement.
@@ -136,8 +136,9 @@ public class Modeler implements ModelerService {
     }
 
     /**
-     * Validates the parsed secondary CSV wrapper to ensure it contains usable data.
-     * 
+     * Validates the parsed secondary CSV wrapper to ensure it contains usable
+     * data.
+     *
      * @param parsedData The parsed secondary data to validate.
      * @throws InvalidParsedSecondaryDataException if validation fails.
      */
