@@ -1,7 +1,7 @@
 package esiih.exporter.exception;
 
 /**
- * Thrown to indicate that the file is invalid.
+ * Thrown to indicate that the export data is invalid.
  */
 public class InvalidExportException extends Exception {
 

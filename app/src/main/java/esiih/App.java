@@ -67,7 +67,7 @@ public class App {
             // 5. EXPORTAR (NOVO PASSO)
             System.out.println("\n[4] Exporting Results to CSV...");
 
-            exporter.exportTransportChain(transportChain, outputFilePath);
+            exporter.exportReport(transportChain, outputFilePath);
             System.out.println("    -> Success! File created at: " + outputFilePath);
 
             // 6. Imprimir na consola (opcional, para debug rápido)

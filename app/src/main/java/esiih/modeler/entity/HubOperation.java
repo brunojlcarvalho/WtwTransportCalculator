@@ -17,10 +17,17 @@ public class HubOperation extends TransportChainElement {
      * Constructor for HubOperation.
      *
      * @param id Unique identifier for the hub operation.
+     * @param hubMode Mode of the hub operation.
+     * @param energySource Energy source used during the operation. 
+     * @param energyConsumed Amount of energy consumed during the operation.
+     * @param durationHours Duration of the operation in hours.
      */
-    public HubOperation(String id) {
+    public HubOperation(String id, Mode hubMode, FuelType energySource, double energyConsumed, double durationHours) {
         super(id);
-        this.hubMode = Mode.HUB;
+        this.hubMode = hubMode != null ? hubMode : Mode.HUB;
+        this.energySource = energySource;
+        this.energyConsumed = energyConsumed;
+        this.durationHours = durationHours;
     }
 
     /**

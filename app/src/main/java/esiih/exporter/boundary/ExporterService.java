@@ -17,5 +17,5 @@ public interface ExporterService {
      * @param filePath
      * @throws IOException
      */
-    void exportTransportChain(TransportChain transportChain, String filePath) throws IOException, InvalidExportException;
+    void exportReport(TransportChain transportChain, String filePath) throws IOException, InvalidExportException;
 }

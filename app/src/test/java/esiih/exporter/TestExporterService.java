@@ -51,7 +51,7 @@ public class TestExporterService {
 
     /**
      * Tests the
-     * {@link ExporterService#exportTransportChain(TransportChain, String)}
+     * {@link ExporterService#exportReport(TransportChain, String)}
      * method with a valid chain. Verifies if the file is created and validates
      * the content structure.
      *
@@ -59,96 +59,96 @@ public class TestExporterService {
      * @throws InvalidExportException if the export fails due to invalid data
      */
     @Test
-    void testExportTransportChain_ValidChain() throws IOException, InvalidExportException {
-        exporterService.exportTransportChain(transportChain, file.getPath());
+    void testexportReport_ValidChain() throws IOException, InvalidExportException {
+        exporterService.exportReport(transportChain, file.getPath());
 
         assertTrue(file.exists());
     }
 
     /**
      * Tests the
-     * {@link ExporterService#exportTransportChain(TransportChain, String)}
+     * {@link ExporterService#exportReport(TransportChain, String)}
      * method with a null file path. Ensures that an
      * {@link InvalidExportException} is thrown.
      */
     @Test
-    void testExportTransportChain_NullFilePath() {
+    void testexportReport_NullFilePath() {
         assertThrows(InvalidExportException.class,
-                () -> exporterService.exportTransportChain(transportChain, null)
+                () -> exporterService.exportReport(transportChain, null)
         );
     }
 
     /**
      * Tests the
-     * {@link ExporterService#exportTransportChain(TransportChain, String)}
+     * {@link ExporterService#exportReport(TransportChain, String)}
      * method with a null {@link TransportChain}. Ensures that an
      * {@link InvalidExportException} is thrown.
      */
     @Test
-    void testExportTransportChain_NullChain() {
+    void testexportReport_NullChain() {
         assertThrows(InvalidExportException.class,
-                () -> exporterService.exportTransportChain(null, file.getPath())
+                () -> exporterService.exportReport(null, file.getPath())
         );
     }
 
     /**
      * Tests the
-     * {@link ExporterService#exportTransportChain(TransportChain, String)}
+     * {@link ExporterService#exportReport(TransportChain, String)}
      * method with an empty chain. Modifies the mock chain to be empty and
      * verifies that an exception is thrown.
      */
     @Test
-    void testExportTransportChain_EmptyChain() {
+    void testexportReport_EmptyChain() {
         transportChain = new TransportChain();
 
         assertThrows(InvalidExportException.class,
-                () -> exporterService.exportTransportChain(transportChain, file.getPath())
+                () -> exporterService.exportReport(transportChain, file.getPath())
         );
     }
 
     /**
      * Tests the
-     * {@link ExporterService#exportTransportChain(TransportChain, String)}
+     * {@link ExporterService#exportReport(TransportChain, String)}
      * method with a chain containing a null element. Ensures that an
      * {@link InvalidExportException} is thrown.
      */
     @Test
-    void testExportTransportChain_ChainWithNullElement() {
+    void testexportReport_ChainWithNullElement() {
         transportChain.addElement(null);
 
         assertThrows(InvalidExportException.class,
-                () -> exporterService.exportTransportChain(transportChain, file.getPath())
+                () -> exporterService.exportReport(transportChain, file.getPath())
         );
     }
 
     /**
      * Tests the
-     * {@link ExporterService#exportTransportChain(TransportChain, String)}
+     * {@link ExporterService#exportReport(TransportChain, String)}
      * method with a chain containing an unknown element type. Ensures that an
      * {@link InvalidExportException} is thrown.
      */
     @Test
-    void testExportTransportChain_UnknownElement() {
+    void testexportReport_UnknownElement() {
         transportChain.addElement(new TransportChainElement("UNK") {
         });
 
         assertThrows(InvalidExportException.class,
-                () -> exporterService.exportTransportChain(transportChain, file.getPath())
+                () -> exporterService.exportReport(transportChain, file.getPath())
         );
     }
 
     /**
      * Tests I/O error handling in
-     * {@link ExporterService#exportTransportChain(TransportChain, String)}.
+     * {@link ExporterService#exportReport(TransportChain, String)}.
      * Tries to write to a directory path instead of a file to trigger an
      * {@link IOException}.
      */
     @Test
-    void testExportTransportChain_IOError() {
+    void testexportReport_IOError() {
         File directory = new File(".");
 
         assertThrows(IOException.class,
-                () -> exporterService.exportTransportChain(transportChain, directory.getAbsolutePath())
+                () -> exporterService.exportReport(transportChain, directory.getAbsolutePath())
         );
     }
 
@@ -170,7 +170,7 @@ public class TestExporterService {
         to.setEmissionTTW(30.0);
         chain.addElement(to);
 
-        HubOperation ho = new HubOperation("HO1");
+        HubOperation ho = new HubOperation("HO1", Mode.HUB, FuelType.ELECTRICITY, 500.0, 5.0);
         ho.setEnergySource(FuelType.ELECTRICITY);
         ho.setDurationHours(5.0);
         ho.setEnergyConsumed(500.0);

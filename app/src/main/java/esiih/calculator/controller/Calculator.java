@@ -30,6 +30,16 @@ public class Calculator implements CalculatorService {
      */
     @Override
     public void calculateGEE(TransportChain transportChain, List<EmissionFactor> emissionFactors) throws InvalidCalculationException {
+        
+        if (transportChain == null) {
+            throw new InvalidCalculationException("TransportChain cannot be null");
+        }
+
+        
+        if (emissionFactors == null) {
+            throw new InvalidCalculationException("EmissionFactors list cannot be null");
+        }
+        
         List<TransportChainElement> elements = transportChain.getElements();
 
         if (elements == null || elements.isEmpty()) {
@@ -161,6 +171,7 @@ public class Calculator implements CalculatorService {
         double ttw = totalEnergyConsumed * factor.getTtwFactor();
         double wtt = totalEnergyConsumed * factor.getWttFactor();
         double wtw = ttw + wtt;
+        
 
         operation.setEmissionTTW(ttw);
         operation.setEmissionWTT(wtt);

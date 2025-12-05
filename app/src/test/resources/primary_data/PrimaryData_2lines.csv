@@ -1,0 +1,2 @@
+Etapa;Tipo Operacao;Veiculo Transporte;Modo Transporte;Distancia Carregado (km);Distancia Vazio (km);Carga Transportada (t);Carga Maxima (t);Tipo Combustivel;Tempo (h);Litros Consumidos (l);Consumos (l/100tkm);Energia(kWh);
+1;TO;Aviao cargueiro;Ar;15000;15000;8;28;Jet kerosene;;;;;

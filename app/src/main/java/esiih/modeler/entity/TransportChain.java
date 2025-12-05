@@ -12,9 +12,26 @@ public class TransportChain {
     private final List<TransportChainElement> elements;
     private double totalWTW;
     private double intensity;
+    private String id;
+    private String description;
 
     /**
-     * Constructor initializing an empty transport chain.
+     * Constructor for TransportChain.
+     *
+     * @param id          Unique identifier for the transport chain.
+     * @param description Description of the transport chain.
+     */
+    public TransportChain(String id, String description, List<TransportChainElement> elements, double totalWTW,
+            double intensity) {
+        this.id = id;
+        this.description = description;
+        this.elements = elements != null ? elements : new ArrayList<>();
+        this.totalWTW = totalWTW;
+        this.intensity = intensity;
+    }
+
+    /**
+     * Default constructor for TransportChain.
      */
     public TransportChain() {
         this.elements = new ArrayList<>();
@@ -34,6 +51,22 @@ public class TransportChain {
      */
     public List<TransportChainElement> getElements() {
         return elements;
+    }
+
+    /**
+     * Gets the unique identifier of the transport chain.
+     * @return the unique identifier of the transport chain
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * Gets the description of the transport chain.
+     * @return the description of the transport chain
+     */
+    public String getDescription() {
+        return description;
     }
 
     /**

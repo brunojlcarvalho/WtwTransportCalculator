@@ -35,7 +35,7 @@ public class Exporter implements ExporterService {
      * Export the transport chain data to a CSV file.
      */
     @Override
-    public void exportTransportChain(TransportChain chain, String filePath) throws IOException, InvalidExportException {
+    public void exportReport(TransportChain chain, String filePath) throws IOException, InvalidExportException {
 
         if (filePath == null || filePath.trim().isEmpty()) {
             throw new InvalidExportException("Error: invalid file path.");
@@ -68,7 +68,7 @@ public class Exporter implements ExporterService {
                     sb.append("TO").append(SEP);
                     sb.append(to.getTransportMode() != null ? to.getTransportMode().toString() : "").append(SEP);
 
-                    String info = String.format(Locale.GERMAN, "%.0f km / %.0f t",
+                    String info = String.format(Locale.ROOT, "%.0f km / %.0f t",
                             to.getDistanceLoadedKm(), to.getPayloadTon());
                     sb.append(info).append(SEP);
 
@@ -76,7 +76,7 @@ public class Exporter implements ExporterService {
                     sb.append("HO").append(SEP);
                     sb.append(ho.getEnergySource() != null ? ho.getEnergySource().toString() : "").append(SEP);
 
-                    String info = String.format(Locale.GERMAN, "%.0f h / %.0f kWh",
+                    String info = String.format(Locale.ROOT, "%.0f h / %.0f kWh",
                             ho.getDurationHours(), ho.getEnergyConsumed());
                     sb.append(info).append(SEP);
 
@@ -84,12 +84,12 @@ public class Exporter implements ExporterService {
                     throw new InvalidExportException("Error: Unknown element type encountered: " + element.getClass().getName());
                 }
 
-                sb.append(String.format(Locale.GERMAN, "%.2f", element.getEmissionWTW())).append(SEP);
-                sb.append(String.format(Locale.GERMAN, "%.2f", element.getEmissionWTT())).append(SEP);
-                sb.append(String.format(Locale.GERMAN, "%.2f", element.getEmissionTTW())).append(SEP);
+                sb.append(String.format(Locale.ROOT, "%.2f", element.getEmissionWTW())).append(SEP);
+                sb.append(String.format(Locale.ROOT, "%.2f", element.getEmissionWTT())).append(SEP);
+                sb.append(String.format(Locale.ROOT, "%.2f", element.getEmissionTTW())).append(SEP);
 
-                sb.append(String.format(Locale.GERMAN, "%.2f", chain.getTotalWTW())).append(SEP);
-                sb.append(String.format(Locale.GERMAN, "%.2f", chain.getIntensity()));
+                sb.append(String.format(Locale.ROOT, "%.2f", chain.getTotalWTW())).append(SEP);
+                sb.append(String.format(Locale.ROOT, "%.2f", chain.getIntensity()));
 
                 writer.write(sb.toString());
                 writer.write(NEW_LINE);

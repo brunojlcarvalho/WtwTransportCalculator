@@ -29,8 +29,8 @@ public class TestModelerService {
     private Modeler modeler;
     private ParsedPrimaryData parsed;
     private ParsedSecondaryData parsedSecondary;
-    String PRIMARY_HEADER = "Etapa;Tipo Operacao;Veiculo Transporte;Modo Transporte;Distancia Carregado (km);Distancia Vazio (km);Carga Transportada (t);Carga Maxima (t);Tipo Combustivel;Tempo (h);Litros Consumidos (l);Consumos (l/100tkm);Energia(kWh);";
-    String SECONDARY_HEADER = "Mode;Fuel;Payload;Empty;Unit;WTT;TTW;Total;Avg";
+    private static final String PRIMARY_HEADER = "Etapa;Tipo Operacao;Veiculo Transporte;Modo Transporte;Distancia Carregado (km);Distancia Vazio (km);Carga Transportada (t);Carga Maxima (t);Tipo Combustivel;Tempo (h);Litros Consumidos (l);Consumos (l/100tkm);Energia(kWh);";
+    private static final String SECONDARY_HEADER = "Mode;Fuel;Payload;Empty;Unit;WTT;TTW;Total;Avg";
 
     @BeforeEach
     void setUp() {
@@ -105,7 +105,7 @@ public class TestModelerService {
         );
     }
 
-    /**
+     /**
      * Test the {@link Modeler#modelTransportChain(ParsedPrimaryData)}, Ensures
      * an exception is thrown when vehicle type exceeds max length. Confirms
      * validation of TransportOperation string field limits.
@@ -169,7 +169,7 @@ public class TestModelerService {
     @Test
     void to_invalidModeString_throwsException() {
         String primaryString = PRIMARY_HEADER + "\n"
-                + "1;TO;Camiao;TESTE;100;50;10;20;Diesel;;;3,5;";
+                + "1;TO;Camiao;UNKNOWN;100;50;10;20;Diesel;;;3,5;";
 
         parsed.setPrimaryDataString(primaryString);
 
@@ -269,6 +269,23 @@ public class TestModelerService {
 
     /**
      * Test the {@link Modeler#modelTransportChain(ParsedPrimaryData)}, Ensures
+     * an exception is thrown when empty distance is negative. Confirms Modeler
+     * prevents invalid negative values in TO fields.
+     */
+    @Test
+    void to_distanceEmptyNegative_throwsException() {
+        String primaryString = PRIMARY_HEADER + "\n"
+                + "1;TO;Camiao;Estrada;100;-1;10;20;Diesel;;;3,5;";
+
+        parsed.setPrimaryDataString(primaryString);
+
+        assertThrows(InvalidPrimaryValueException.class,
+                () -> modeler.modelTransportChain(parsed)
+        );
+    }
+
+    /**
+     * Test the {@link Modeler#modelTransportChain(ParsedPrimaryData)}, Ensures
      * empty distance equal to 0 km is accepted. Confirms that zero empty
      * distance is treated as a valid TransportOperation input.
      */
@@ -276,25 +293,6 @@ public class TestModelerService {
     void to_distanceEmpty_zero_throwsException() throws InvalidParsePrimaryDataException {
         String primaryString = PRIMARY_HEADER + "\n"
                 + "1;TO;Camiao;Estrada;50;0;10;20;Diesel;;;3,5;";
-
-        parsed.setPrimaryDataString(primaryString);
-
-        TransportChain chain = modeler.modelTransportChain(parsed);
-
-        assertNotNull(chain);
-        assertEquals(1, chain.getElements().size());
-        assertTrue(chain.getElements().get(0) instanceof TransportOperation);
-    }
-
-    /**
-     * Test the {@link Modeler#modelTransportChain(ParsedPrimaryData)}, Ensures
-     * empty distance at minimum valid boundary (0.01 km) is accepted. Confirms
-     * lower valid boundary for TransportOperation empty distance.
-     */
-    @Test
-    void to_distanceEmpty_minValid_createsTransportOperation() throws InvalidParsePrimaryDataException {
-        String primaryString = PRIMARY_HEADER + "\n"
-                + "1;TO;Camiao;Estrada;50;0,01;10;20;Diesel;;;3,5;";
 
         parsed.setPrimaryDataString(primaryString);
 
@@ -324,22 +322,7 @@ public class TestModelerService {
         assertTrue(chain.getElements().get(0) instanceof TransportOperation);
     }
 
-    /**
-     * Test the {@link Modeler#modelTransportChain(ParsedPrimaryData)}, Ensures
-     * an exception is thrown when empty distance is negative. Confirms Modeler
-     * prevents invalid negative values in TO fields.
-     */
-    @Test
-    void to_distanceEmptyNegative_throwsException() {
-        String primaryString = PRIMARY_HEADER + "\n"
-                + "1;TO;Camiao;Estrada;100;-10;10;20;Diesel;;;3,5;";
 
-        parsed.setPrimaryDataString(primaryString);
-
-        assertThrows(InvalidPrimaryValueException.class,
-                () -> modeler.modelTransportChain(parsed)
-        );
-    }
 
     /**
      * Test the {@link Modeler#modelTransportChain(ParsedPrimaryData)}, Ensures
@@ -419,9 +402,9 @@ public class TestModelerService {
      * values properly.
      */
     @Test
-    void to_maxPayloadNegative_throwsException() {
+    void to_maxPayloadTooHigh_throwsException() {
         String primaryString = PRIMARY_HEADER + "\n"
-                + "1;TO;Camiao;Estrada;100;10;10;-40;Diesel;;;3,5;";
+                + "1;TO;Camiao;Estrada;100;10;10;29;Diesel;;;3,5;";
 
         parsed.setPrimaryDataString(primaryString);
 
@@ -504,13 +487,13 @@ public class TestModelerService {
 
     /**
      * Test the {@link Modeler#modelTransportChain(ParsedPrimaryData)}, Ensures
-     * negative fuel consumption (liters) is not allowed. Confirms correct
-     * numeric validation on consumption fields.
+     * liters consumed equal to 0 is rejected. Confirms lower invalid boundary
+     * for liters consumed.
      */
     @Test
-    void to_negativeLitersConsumed_throwsException() {
+    void to_litersConsumed_negative_throwsException() {
         String primaryString = PRIMARY_HEADER + "\n"
-                + "1;TO;Camiao;Estrada;100;50;10;20;Diesel;;-10;3,5;";
+                + "1;TO;Camiao;Estrada;100;50;10;20;Diesel;;-1;;";
 
         parsed.setPrimaryDataString(primaryString);
 
@@ -521,13 +504,13 @@ public class TestModelerService {
 
     /**
      * Test the {@link Modeler#modelTransportChain(ParsedPrimaryData)}, Ensures
-     * liters consumed equal to 0 is rejected. Confirms lower invalid boundary
-     * for liters consumed.
+     * negative fuel consumption (liters) is not allowed. Confirms correct
+     * numeric validation on consumption fields.
      */
     @Test
-    void to_litersConsumed_zero_throwsException() {
+    void to_LitersConsumedTooHigh_throwsException() {
         String primaryString = PRIMARY_HEADER + "\n"
-                + "1;TO;Camiao;Estrada;100;50;10;20;Diesel;;0;;";
+                + "1;TO;Camiao;Estrada;100;50;10;20;Diesel;;10000001;3,5;";
 
         parsed.setPrimaryDataString(primaryString);
 
@@ -544,7 +527,7 @@ public class TestModelerService {
     @Test
     void to_litersConsumed_minValid_createsTransportOperation() throws InvalidParsePrimaryDataException {
         String primaryString = PRIMARY_HEADER + "\n"
-                + "1;TO;Camiao;Estrada;100;50;10;20;Diesel;;0,01;3,5;";
+                + "1;TO;Camiao;Estrada;100;50;10;20;Diesel;;0;3,5;";
 
         parsed.setPrimaryDataString(primaryString);
 
@@ -582,7 +565,7 @@ public class TestModelerService {
     @Test
     void to_consumptionLitersTooHigh_throwsException() {
         String primaryString = PRIMARY_HEADER + "\n"
-                + "1;TO;Camiao;Estrada;100;50;10;20;Diesel;;;150;";
+                + "1;TO;Camiao;Estrada;100;50;10;20;Diesel;;;101;";
 
         parsed.setPrimaryDataString(primaryString);
 
@@ -597,9 +580,9 @@ public class TestModelerService {
      * boundary for consumption liters.
      */
     @Test
-    void to_consumptionLiters_zero_throwsException() {
+    void to_consumptionLiters_negative_throwsException() {
         String primaryString = PRIMARY_HEADER + "\n"
-                + "5;TO;Camiao;Estrada;50;50;15;20;Diesel;;;0;;";
+                + "5;TO;Camiao;Estrada;50;50;15;20;Diesel;;;-1;;";
 
         parsed.setPrimaryDataString(primaryString);
 
@@ -616,7 +599,7 @@ public class TestModelerService {
     @Test
     void to_consumptionLiters_minValid_createsTransportOperation() throws InvalidParsePrimaryDataException {
         String primaryString = PRIMARY_HEADER + "\n"
-                + "1;TO;Camiao;Estrada;100;50;10;20;Diesel;;;0,01;";
+                + "1;TO;Camiao;Estrada;100;50;10;20;Diesel;;;0;";
 
         parsed.setPrimaryDataString(primaryString);
 
@@ -720,13 +703,13 @@ public class TestModelerService {
 
     /**
      * Test the {@link Modeler#modelTransportChain(ParsedPrimaryData)}, Ensures
-     * HO energy consumption exceeding limits triggers error. Confirms proper
-     * validation of HubOperation energy values.
+     * HO energy equal to 0 kWh is rejected. Confirms lower invalid boundary for
+     * HubOperation energy.
      */
     @Test
-    void ho_energyTooHigh_throwsException() {
+    void ho_energy_zero_throwsException() {
         String primaryString = PRIMARY_HEADER + "\n"
-                + "1;HO;Hub;;;;10;;electricity;1;;;100001;";
+                + "1;HO;Hub;;;;10;;electricity;1;;;0;";
 
         parsed.setPrimaryDataString(primaryString);
 
@@ -737,13 +720,13 @@ public class TestModelerService {
 
     /**
      * Test the {@link Modeler#modelTransportChain(ParsedPrimaryData)}, Ensures
-     * HO energy equal to 0 kWh is rejected. Confirms lower invalid boundary for
-     * HubOperation energy.
+     * HO energy consumption exceeding limits triggers error. Confirms proper
+     * validation of HubOperation energy values.
      */
     @Test
-    void ho_energy_zero_throwsException() {
+    void ho_energyTooHigh_throwsException() {
         String primaryString = PRIMARY_HEADER + "\n"
-                + "1;HO;Hub;;;;10;;electricity;1;;;0;";
+                + "1;HO;Hub;;;;10;;electricity;1;;;100001;";
 
         parsed.setPrimaryDataString(primaryString);
 
@@ -788,24 +771,6 @@ public class TestModelerService {
         assertNotNull(chain);
         assertEquals(1, chain.getElements().size());
         assertTrue(chain.getElements().get(0) instanceof HubOperation);
-    }
-
-    /**
-     * Test the {@link Modeler#modelTransportChain(ParsedPrimaryData)}, Ensures
-     * an exception is thrown when HO energy consumption is negative. Confirms
-     * that HubOperation energy values must be non-negative and within valid
-     * bounds.
-     */
-    @Test
-    void ho_energyNegative_throwsException() {
-        String primaryString = PRIMARY_HEADER + "\n"
-                + "1;HO;Hub;;;;10;;electricity;1;;;-2;";
-
-        parsed.setPrimaryDataString(primaryString);
-
-        assertThrows(InvalidPrimaryValueException.class,
-                () -> modeler.modelTransportChain(parsed)
-        );
     }
 
     /**
