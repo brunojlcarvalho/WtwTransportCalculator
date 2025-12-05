@@ -51,7 +51,7 @@ public class EmissionFactor {
     }
 
     /**
-     * gets the transport mode.
+     * Gets the transport mode.
      *
      * @return transport mode
      */
@@ -60,7 +60,7 @@ public class EmissionFactor {
     }
 
     /**
-     * gets the fuel type.
+     * Gets the fuel type.
      *
      * @return fuel type
      */
@@ -69,7 +69,7 @@ public class EmissionFactor {
     }
 
     /**
-     * gets the payload category.
+     * Gets the payload category.
      *
      * @return payload category
      */
@@ -78,7 +78,7 @@ public class EmissionFactor {
     }
 
     /**
-     * gets the empty run percent.
+     * Gets the empty run percent.
      *
      * @return empty run percent
      */
@@ -87,7 +87,7 @@ public class EmissionFactor {
     }
 
     /**
-     * gets the Tank-to-Wheel emission factor.
+     * Gets the Tank-to-Wheel emission factor.
      *
      * @return Tank-to-Wheel emission factor
      */
@@ -96,7 +96,7 @@ public class EmissionFactor {
     }
 
     /**
-     * gets the Well-to-Tank emission factor.
+     * Gets the Well-to-Tank emission factor.
      *
      * @return Well-to-Tank emission factor
      */
@@ -105,7 +105,7 @@ public class EmissionFactor {
     }
 
     /**
-     * gets the unit of measurement.
+     * Gets the unit of measurement.
      *
      * @return unit of measurement
      */
@@ -114,7 +114,7 @@ public class EmissionFactor {
     }
 
     /**
-     * gets the average consumption.
+     * Gets the average consumption.
      *
      * @return average consumption
      */

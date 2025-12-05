@@ -6,18 +6,23 @@ import esiih.modeler.entity.enums.Mode;
 import esiih.modeler.entity.enums.Unit;
 import esiih.modeler.exception.InvalidParsedSecondaryDataException;
 
+/**
+ * Converts CSV rows into EmissionFactor instances.
+ */
 public class ModelEmissionFactor {
-private static final double MAX_PAYLOAD = 28;
-private static final double MAX_EMPTY_PCT = 1;
-private static final double MIN_WTT_TTW_AVG = 0;
+    
+    private static final double MAX_PAYLOAD = 28;
+    private static final double MAX_EMPTY_PCT = 1;
+    private static final double MIN_WTT_TTW_AVG = 0;
+    
     /**
      * Converts a row of the secondary CSV dataset into an {@link EmissionFactor} instance.
      * Each field is parsed and validated individually according to the
      * emission factor structure. Invalid or unparsable values result in {@link InvalidParsedSecondaryDataException}.
      *
-     * @param values
-     * @param rowNumber
-     * @return
+     * @param values The CSV row values.
+     * @param rowNumber The row number in the CSV file.
+     * @return An EmissionFactor instance.
      * @throws InvalidParsedSecondaryDataException
      */
     public EmissionFactor fromCsv(String[] values, int rowNumber) throws InvalidParsedSecondaryDataException {
@@ -44,9 +49,9 @@ private static final double MIN_WTT_TTW_AVG = 0;
     /**
      * Parses the CSV value into a {@link Mode} instance.
      *
-     * @param raw
-     * @param rowNumber
-     * @return
+     * @param raw The raw CSV value.
+     * @param rowNumber The row number in the CSV file.
+     * @return A Mode instance.
      * @throws InvalidParsedSecondaryDataException
      */
     private Mode parseMode(String raw, int rowNumber) throws InvalidParsedSecondaryDataException {
@@ -64,9 +69,9 @@ private static final double MIN_WTT_TTW_AVG = 0;
     /**
      * Parses the CSV value into a {@link FuelType} instance.
      *
-     * @param raw
-     * @param rowNumber
-     * @return
+     * @param raw The raw CSV value.
+     * @param rowNumber The row number in the CSV file.
+     * @return A FuelType instance.
      * @throws InvalidParsedSecondaryDataException
      */
     private FuelType parseFuel(String raw, int rowNumber)
@@ -85,9 +90,9 @@ private static final double MIN_WTT_TTW_AVG = 0;
     /**
      * Parses the CSV value into a {@link Unit} instance
      *
-     * @param raw
-     * @param rowNumber
-     * @return
+     * @param raw The raw CSV value.
+     * @param rowNumber The row number in the CSV file.
+     * @return A Unit instance.
      * @throws InvalidParsedSecondaryDataException
      */
     private Unit parseUnit(String raw, int rowNumber)
@@ -106,8 +111,8 @@ private static final double MIN_WTT_TTW_AVG = 0;
     /**
      * Converts a raw numeric string into a double, supporting commas as decimal separators.
      *
-     * @param val
-     * @return
+     * @param val The raw numeric string.
+     * @return The parsed double value.
      */
     private double parseDouble(String val) {
         if (val == null || val.trim().isEmpty())
@@ -119,13 +124,9 @@ private static final double MIN_WTT_TTW_AVG = 0;
     /**
      * Validates that the unit provided in the CSV is compatible with the transport mode.
      *
-     * - ROAD/RAIL/SEA/INLAND_WATERWAY require: KG_CO2E_PER_TKM
-     * - AIR requires: KG_CO2E_PER_TKM
-     * - HUB requires: KG_CO2E_PER_KWH or KG_CO2E_PER_TH
-     *
-     * @param unit
-     * @param mode
-     * @param rowNumber
+     * @param unit The unit to validate.
+     * @param mode The transport mode.
+     * @param rowNumber The row number in the CSV file.
      * @throws InvalidParsedSecondaryDataException
      */
     public void validateUnitForMode(Unit unit, Mode mode, int rowNumber)
@@ -152,10 +153,10 @@ private static final double MIN_WTT_TTW_AVG = 0;
     /**
      * Validates numeric values with max and min limits.
      *
-     * @param value
-     * @param maxAllowed
-     * @param fieldName
-     * @return
+     * @param value The numeric value to validate.
+     * @param maxAllowed The maximum allowable value.
+     * @param fieldName The name of the field being validated.
+     * @return The validated numeric value.
      * @throws InvalidParsedSecondaryDataException
      */
     public double validateMax(double value, double maxAllowed, String fieldName)
@@ -168,10 +169,11 @@ private static final double MIN_WTT_TTW_AVG = 0;
 
     /**
      * Validates numeric values with min limits.
-     * @param value
-     * @param minAllowed
-     * @param fieldName
-     * @return
+     * 
+     * @param value The numeric value to validate.
+     * @param minAllowed The minimum allowable value.
+     * @param fieldName The name of the field being validated.
+     * @return The validated numeric value.
      * @throws InvalidParsedSecondaryDataException
      */
     public double validateMin(double value, double minAllowed, String fieldName)

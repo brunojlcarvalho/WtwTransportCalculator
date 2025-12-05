@@ -6,19 +6,19 @@ import esiih.modeler.entity.enums.Mode;
 import esiih.modeler.exception.InvalidParsePrimaryDataException;
 import esiih.modeler.exception.InvalidPrimaryValueException;
 
+/**
+ * ModelTransportOperation is responsible for creating TransportOperation
+ * instances from CSV data.
+ */
 public class ModelTransportOperation {
 
     /**
-     * Builds a {@link TransportOperation} instance from a CSV line.
-     *
-     * This method extracts all TransportOperation-related fields from the
-     * provided CSV, validates them individually, and constructs a fully
-     * populated TransportOperation domain object.
-     *
-     * @param id
-     * @param values
-     * @return
-     * @throws InvalidParsePrimaryDataException
+     * Creates a TransportOperation instance from CSV values.
+     * 
+     * @param id The operation ID.
+     * @param values The CSV row values.
+     * @return The created TransportOperation instance.
+     * @throws InvalidParsePrimaryDataException if parsing fails.
      */
     public TransportOperation fromCsv(String id, String[] values)
             throws InvalidParsePrimaryDataException {
@@ -51,9 +51,9 @@ public class ModelTransportOperation {
     /**
      * Validates the vehicle type string of a TransportOperation.
      *
-     * @param vehicleType
-     * @return
-     * @throws InvalidParsePrimaryDataException
+     * @param vehicleType The vehicle type string from the CSV.
+     * @return The validated vehicle type string.
+     * @throws InvalidParsePrimaryDataException if the vehicle type is invalid.
      */
     public String validateVehicleType(String vehicleType) throws InvalidParsePrimaryDataException {
         if (vehicleType == null || vehicleType.isEmpty()) {
@@ -68,9 +68,9 @@ public class ModelTransportOperation {
     /**
      * Parses and validates the transport mode (e.g., ROAD, RAIL, AIR).
      *
-     * @param rawMode
-     * @return
-     * @throws InvalidParsePrimaryDataException
+     * @param rawMode The raw mode string from the CSV.
+     * @return The parsed and validated Mode.
+     * @throws InvalidParsePrimaryDataException if the mode is invalid or cannot be parsed.
      */
     public Mode parseMode(String rawMode) throws InvalidParsePrimaryDataException {
         try {
@@ -87,9 +87,9 @@ public class ModelTransportOperation {
     /**
      * Validates the loaded distance (km) value for a TransportOperation.
      *
-     * @param dist
-     * @return
-     * @throws InvalidParsePrimaryDataException
+     * @param dist The loaded distance value.
+     * @return The validated loaded distance.
+     * @throws InvalidParsePrimaryDataException if the loaded distance is invalid.
      */
     public double validateDistanceLoaded(double dist) throws InvalidParsePrimaryDataException {
         if (dist <= 0 || dist > 20000) {
@@ -100,10 +100,10 @@ public class ModelTransportOperation {
 
     /**
      * Validates the empty distance (km) value for a TransportOperation.
-     *
-     * @param dist
-     * @return
-     * @throws InvalidParsePrimaryDataException
+     * 
+     * @param dist The empty distance value.
+     * @return The validated empty distance.
+     * @throws InvalidParsePrimaryDataException if the empty distance is invalid.
      */
     public double validateDistanceEmpty(double dist) throws InvalidParsePrimaryDataException {
         if (dist < 0 || dist > 20000) {
@@ -115,11 +115,11 @@ public class ModelTransportOperation {
     /**
      * Validates payload numeric values (payload and max capacity).
      *
-     * @param value
-     * @param maxAllowed
-     * @param fieldName
-     * @return
-     * @throws InvalidParsePrimaryDataException
+     * @param value The payload value.
+     * @param maxAllowed The maximum allowed payload value.
+     * @param fieldName The name of the field being validated.
+     * @return The validated payload value.
+     * @throws InvalidParsePrimaryDataException if the payload value is invalid.
      */
     public double validatePayload(double value, double maxAllowed, String fieldName)
             throws InvalidParsePrimaryDataException {
@@ -133,12 +133,12 @@ public class ModelTransportOperation {
      * Parses and validates a numeric range for fields such as liters consumed and
      * consumption (l/100tkm).
      *
-     * @param raw
-     * @param min
-     * @param max
-     * @param fieldName
-     * @return
-     * @throws InvalidParsePrimaryDataException
+     * @param raw The raw numeric string.
+     * @param min The minimum allowed value.
+     * @param max The maximum allowed value.
+     * @param fieldName The name of the field being validated.
+     * @return The parsed and validated numeric value.
+     * @throws InvalidParsePrimaryDataException if the value is invalid or cannot be parsed.
      */
     private double parseAndValidateRange(String raw, double min, double max, String fieldName)
             throws InvalidParsePrimaryDataException {
@@ -163,10 +163,10 @@ public class ModelTransportOperation {
     /**
      * Parses and validates the fuel type for a TransportOperation.
      *
-     * @param raw
-     * @param fieldName
-     * @return
-     * @throws InvalidParsePrimaryDataException
+     * @param raw The raw fuel type string.
+     * @param fieldName The name of the field being validated.
+     * @return The parsed and validated FuelType.
+     * @throws InvalidParsePrimaryDataException if the fuel type is invalid or cannot be parsed.
      */
     public FuelType parseFuel(String raw, String fieldName) throws InvalidParsePrimaryDataException {
         try {
@@ -184,8 +184,8 @@ public class ModelTransportOperation {
      * Safely parses a numeric string into a double, converting comma decimal
      * separators and returning 0.0 for empty values.
      *
-     * @param val
-     * @return
+     * @param val The raw numeric string.
+     * @return The parsed double value.
      */
     private double parseDouble(String val) {
         if (val == null || val.trim().isEmpty()) {

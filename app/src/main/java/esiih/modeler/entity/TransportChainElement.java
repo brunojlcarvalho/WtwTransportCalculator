@@ -21,8 +21,8 @@ public abstract class TransportChainElement {
 
     /**
      * Constructor for TransportChainElement.
-     *
-     * @param id          Unique identifier for the transport chain element.
+     * 
+     * @param id Unique identifier for the transport chain element.
      * @param emissionWTW Well-to-Wheel emissions.
      * @param emissionWTT Well-to-Tank emissions.
      * @param emissionTTW Tank-to-Wheel emissions.
@@ -36,6 +36,8 @@ public abstract class TransportChainElement {
 
     /**
      * Gets the unique identifier of the transport chain element.
+     * 
+     * @return The unique identifier.
      */
     public String getId() {
         return id;
@@ -43,6 +45,8 @@ public abstract class TransportChainElement {
 
     /**
      * Gets the Well-to-Wheel emissions of the transport chain element.
+     * 
+     * @return The Well-to-Wheel emissions.
      */
     public double getEmissionWTW() {
         return emissionWTW;
@@ -50,6 +54,8 @@ public abstract class TransportChainElement {
 
     /**
      * Sets the Well-to-Wheel emissions of the transport chain element.
+     * 
+     * @param emissionWTW The Well-to-Wheel emissions to set.
      */
     public void setEmissionWTW(double emissionWTW) {
         this.emissionWTW = emissionWTW;
@@ -57,6 +63,8 @@ public abstract class TransportChainElement {
 
     /**
      * Gets the Well-to-Tank emissions of the transport chain element.
+     * 
+     * @return The Well-to-Tank emissions.
      */
     public double getEmissionWTT() {
         return emissionWTT;
@@ -64,6 +72,8 @@ public abstract class TransportChainElement {
 
     /**
      * Sets the Well-to-Tank emissions of the transport chain element.
+     * 
+     * @param emissionWTT The Well-to-Tank emissions to set.
      */
     public void setEmissionWTT(double emissionWTT) {
         this.emissionWTT = emissionWTT;
@@ -71,6 +81,8 @@ public abstract class TransportChainElement {
 
     /**
      * Gets the Tank-to-Wheel emissions of the transport chain element.
+     * 
+     * @return The Tank-to-Wheel emissions.
      */
     public double getEmissionTTW() {
         return emissionTTW;
@@ -78,6 +90,8 @@ public abstract class TransportChainElement {
 
     /**
      * Sets the Tank-to-Wheel emissions of the transport chain element.
+     * 
+     * @param emissionTTW The Tank-to-Wheel emissions to set.
      */
     public void setEmissionTTW(double emissionTTW) {
         this.emissionTTW = emissionTTW;

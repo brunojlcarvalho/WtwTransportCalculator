@@ -56,7 +56,7 @@ public class Calculator implements CalculatorService {
             if (element instanceof TransportOperation operation) {
                 calcTransportOperation(operation, emissionFactors);
 
-                // Acumula atividade (Massa * Distancia Carregado) para intensidade
+                // Acumulates total activity for intensity calculation
                 double elementActivity = operation.getPayloadTon() * operation.getDistanceLoadedKm();
                 totalChainActivity += elementActivity;
 
@@ -83,24 +83,25 @@ public class Calculator implements CalculatorService {
      * @throws InvalidCalculationException if any calculation error occurs.
      */
     private void calcTransportOperation(TransportOperation operation, List<EmissionFactor> emissionFactors) throws InvalidCalculationException {
+
         validateTO(operation);
 
-        // 1. Cálculos de Atividade e Distância 
         double distLoaded = Math.max(0.0, operation.getDistanceLoadedKm());
         double distEmpty = Math.max(0.0, operation.getDistanceEmptyKm());
         double payload = Math.max(0.0, operation.getPayloadTon());
         double capacity = Math.max(0.0, operation.getMaxCapacityTon());
 
+        // Calculations based on loaded and empty distances, payload, and capacity
         double totalDistReal = distLoaded + distEmpty;
         double emptyReturnFactor = (totalDistReal == 0.0) ? 0.0 : (distEmpty / totalDistReal);
         double adjustedDistance = distLoaded * (1 + emptyReturnFactor);
         double loadFactor = (capacity == 0.0) ? 0.0 : clamp(payload / capacity, 0.0, 1.0);
         double effectiveLoad = capacity * loadFactor;
 
-        // Atividade para cálculo (t.km)
+        // Activity for calculation (t.km)
         double activityTKm = effectiveLoad * adjustedDistance;
 
-        // 2. Encontrar Fator
+        // Find Factor
         EmissionFactor factor = findEmissionFactor(
                 operation.getTransportMode(),
                 operation.getFuelType(),
@@ -109,14 +110,14 @@ public class Calculator implements CalculatorService {
         double ttw = 0.0;
         double wtt = 0.0;
 
-        // 3. DECISÃO BASEADA NA UNIDADE DO FATOR
+        // Decision based on Factor Unit
         if (factor.getUnit() == Unit.KG_CO2E_PER_TKM) {
-            // Caso A: Fator baseado em Atividade
+            // Factor based on Activity
             ttw = activityTKm * factor.getTtwFactor();
             wtt = activityTKm * factor.getWttFactor();
 
         } else {
-            // Caso B: Fator baseado em Combustível
+            // Factor based on Fuel
             double consumptionTotal = 0.0;
 
             if (operation.getLitersConsumed() > 0) {
@@ -149,7 +150,7 @@ public class Calculator implements CalculatorService {
     private void calcHubOperation(HubOperation operation, List<EmissionFactor> emissionFactors) throws InvalidCalculationException {
         validateHO(operation);
 
-        // 1. Calcular o Consumo Total de Energia
+        // Calculates total energy consumed
         double rawEnergyInput = Math.max(0.0, operation.getEnergyConsumed());
         double duration = Math.max(0.0, operation.getDurationHours());
 
@@ -161,13 +162,13 @@ public class Calculator implements CalculatorService {
             totalEnergyConsumed = 0;
         }
 
-        // 2. Encontrar fator (Modo HUB, Tipo Energia)
+        // Find Factor (Hub Mode, Energy Type)
         EmissionFactor factor = findEmissionFactor(
                 operation.getHubMode(),
                 operation.getEnergySource(),
                 emissionFactors);
 
-        // 3. Calcular Emissões (kgCO2e / kWh)
+        // Calculate Emissions (kgCO2e / kWh)
         double ttw = totalEnergyConsumed * factor.getTtwFactor();
         double wtt = totalEnergyConsumed * factor.getWttFactor();
         double wtw = ttw + wtt;

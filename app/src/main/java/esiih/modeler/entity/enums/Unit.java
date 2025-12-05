@@ -16,14 +16,30 @@ public enum Unit {
 
     private final String symbol;
 
+    /**
+     * Constructor for Unit enum.
+     * 
+     * @param symbol The symbol representing the unit.
+     */
     Unit(String symbol) {
         this.symbol = symbol;
     }
 
+    /**
+     * Gets the symbol representing the unit.
+     * 
+     * @return The symbol of the unit.
+     */
     public String getSymbol() {
         return symbol;
     }
 
+    /**
+     * Parses a string to return the corresponding Unit enum value.
+     * 
+     * @param text The input string representing the unit.
+     * @return The corresponding Unit enum value, or null if not recognized.
+     */
     public static Unit fromString(String text) {
         String normalized = text.trim();
 
