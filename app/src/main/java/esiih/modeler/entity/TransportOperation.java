@@ -29,6 +29,42 @@ public class TransportOperation extends TransportChainElement {
     }
 
     /**
+     * constructor for TransportOperation.
+     *
+     * @param id                Unique identifier for the transport operation.
+     * @param transportMode     Mode of transport.
+     * @param vehicleType       Vehicle type description.
+     * @param distanceLoadedKm  Distance traveled loaded (km).
+     * @param distanceEmptyKm   Distance traveled empty (km).
+     * @param payloadTon        Payload carried (tons).
+     * @param maxCapacityTon    Maximum capacity (tons).
+     * @param litersConsumed    Liters consumed by this operation.
+     * @param consumptionLitTKm Consumption in liters per ton-km.
+     * @param fuelType          Fuel type used.
+     */
+    public TransportOperation(String id,
+            Mode transportMode,
+            String vehicleType,
+            double distanceLoadedKm,
+            double distanceEmptyKm,
+            double payloadTon,
+            double maxCapacityTon,
+            double litersConsumed,
+            double consumptionLitTKm,
+            FuelType fuelType) {
+        super(id);
+        this.transportMode = transportMode;
+        this.vehicleType = vehicleType;
+        this.distanceLoadedKm = distanceLoadedKm;
+        this.distanceEmptyKm = distanceEmptyKm;
+        this.payloadTon = payloadTon;
+        this.maxCapacityTon = maxCapacityTon;
+        this.litersConsumed = litersConsumed;
+        this.consumptionLitTKm = consumptionLitTKm;
+        this.fuelType = fuelType;
+    }
+
+    /**
      * Gets the transport mode of the operation.
      */
     public Mode getTransportMode() {

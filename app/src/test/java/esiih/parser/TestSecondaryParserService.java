@@ -3,6 +3,8 @@ package esiih.parser;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import esiih.importer.boundary.SecondaryParserService;
@@ -12,11 +14,18 @@ import esiih.importer.exception.InvalidContentException;
 import esiih.importer.exception.InvalidDataException;
 import esiih.importer.exception.InvalidFileException;
 
+/**
+ * Test class for the {@link SecondaryDataParser} class.
+ */
 public class TestSecondaryParserService {
 
     private static final String SECONDARY_BASE = "src/test/resources/secondary_data/";
+    private SecondaryParserService secondaryParserService;
 
-    private final SecondaryParserService secondaryParserService = new SecondaryDataParser();
+    @BeforeEach
+    void setUp() {
+        secondaryParserService = new SecondaryDataParser();
+    }
 
     /**
      * Tests the {@link SecondaryParserService#parseSecondaryData(String)}
@@ -26,7 +35,7 @@ public class TestSecondaryParserService {
      * @throws InvalidDataException
      */
     @Test
-    void TestValidCSV() throws InvalidDataException {
+    void testValidCSV() throws InvalidDataException {
         String filePath = "src/main/resources/secondary_data.csv";
 
         ParsedSecondaryData result = secondaryParserService.parseSecondaryData(filePath);
@@ -41,7 +50,7 @@ public class TestSecondaryParserService {
      * method. Ensures that an empty CSV file throws an InvalidDataException.
      */
     @Test
-    void TestEmptyCSV() {
+    void testEmptyCSV() {
         String filePath = SECONDARY_BASE + "empty.csv";
 
         assertThrows(InvalidContentException.class,
@@ -57,8 +66,8 @@ public class TestSecondaryParserService {
      *
      */
     @Test
-    void TestNoHeaderCSV() {
-        String filePath = SECONDARY_BASE + "no_header.csv";
+    void TestInvalidHeadersCSV() {
+        String filePath = SECONDARY_BASE + "invalid_headers.csv";
 
         assertThrows(InvalidContentException.class,
                 () -> {

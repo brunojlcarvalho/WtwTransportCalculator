@@ -34,11 +34,7 @@ public class ModelHubOperation {
 
         FuelType energySource = parseEnergySource(values[8]);
 
-        HubOperation ho = new HubOperation(id);
-        ho.setDurationHours(duration);
-        ho.setEnergyConsumed(energy);
-        ho.setEnergySource(energySource);
-        ho.setHubMode(Mode.HUB);
+        HubOperation ho = new HubOperation(id, Mode.HUB, energySource, energy, duration);
 
         return ho;
 

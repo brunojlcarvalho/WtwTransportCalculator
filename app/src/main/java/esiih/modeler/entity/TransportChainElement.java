@@ -20,6 +20,21 @@ public abstract class TransportChainElement {
     }
 
     /**
+     * Constructor for TransportChainElement.
+     *
+     * @param id          Unique identifier for the transport chain element.
+     * @param emissionWTW Well-to-Wheel emissions.
+     * @param emissionWTT Well-to-Tank emissions.
+     * @param emissionTTW Tank-to-Wheel emissions.
+     */
+    public TransportChainElement(String id, double emissionWTW, double emissionWTT, double emissionTTW) {
+        this.id = id;
+        this.emissionWTW = emissionWTW;
+        this.emissionWTT = emissionWTT;
+        this.emissionTTW = emissionTTW;
+    }
+
+    /**
      * Gets the unique identifier of the transport chain element.
      */
     public String getId() {

@@ -19,6 +19,7 @@ import esiih.importer.exception.InvalidFileException;
 public class PrimaryDataParser implements PrimaryParserService {
 
     private static final int MAX_LINES_PRIMARY = 50;
+    private static final int MIN_LINES_PRIMARY = 2;
 
     private final PrimaryHeaderParser headerParser = new PrimaryHeaderParser();
 
@@ -84,6 +85,10 @@ public class PrimaryDataParser implements PrimaryParserService {
             throw new InvalidContentException("The file is empty.");
         }
 
+        if(lines.length < MIN_LINES_PRIMARY) {
+            throw new InvalidContentException("The file does not contain enough data.");
+        }
+        
         if (lines.length > MAX_LINES_PRIMARY) {
             throw new InvalidContentException("CSV file is too large.");
         }

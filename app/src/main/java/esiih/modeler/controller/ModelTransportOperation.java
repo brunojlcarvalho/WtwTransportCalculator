@@ -37,20 +37,13 @@ public class ModelTransportOperation {
 
         FuelType fuel = parseFuel(values[8], "fuel");
 
-        double litersConsumed = parseAndValidateRange(values[10], 0.01, 10000000, "liters Consumed");
+        double litersConsumed = parseAndValidateRange(values[10], 0, 10000000, "liters Consumed");
 
-        double consumptionLitTKm = parseAndValidateRange(values[11], 0.01, 100, "consumption liters");
+        double consumptionLitTKm = parseAndValidateRange(values[11], 0, 100, "consumption liters");
 
-        TransportOperation to = new TransportOperation(id);
-        to.setTransportMode(mode);
-        to.setVehicleType(vehicleType);
-        to.setDistanceLoadedKm(distLoaded);
-        to.setDistanceEmptyKm(distEmpty);
-        to.setPayloadTon(payload);
-        to.setMaxCapacityTon(maxPayload);
-        to.setLitersConsumed(litersConsumed);
-        to.setConsumptionLitTKm(consumptionLitTKm);
-        to.setFuelType(fuel);
+        TransportOperation to = new TransportOperation(id, mode, vehicleType, distLoaded,
+                distEmpty, payload, maxPayload, litersConsumed,
+                consumptionLitTKm, fuel);
 
         return to;
     }
@@ -137,7 +130,8 @@ public class ModelTransportOperation {
     }
 
     /**
-     * Parses and validates a numeric range for fields such as liters consumed and consumption (l/100tkm).
+     * Parses and validates a numeric range for fields such as liters consumed and
+     * consumption (l/100tkm).
      *
      * @param raw
      * @param min
@@ -146,7 +140,8 @@ public class ModelTransportOperation {
      * @return
      * @throws InvalidParsePrimaryDataException
      */
-    private double parseAndValidateRange(String raw, double min, double max, String fieldName) throws InvalidParsePrimaryDataException {
+    private double parseAndValidateRange(String raw, double min, double max, String fieldName)
+            throws InvalidParsePrimaryDataException {
         if (raw == null || raw.trim().isEmpty()) {
             return 0.0;
         }
@@ -164,7 +159,6 @@ public class ModelTransportOperation {
 
         return value;
     }
-
 
     /**
      * Parses and validates the fuel type for a TransportOperation.
