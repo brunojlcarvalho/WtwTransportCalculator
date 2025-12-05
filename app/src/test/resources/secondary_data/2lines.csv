@@ -1,0 +1,2 @@
+Mode;FuelType;PayloadT;EmptyKmPct;ActivityUnit;WttEmissionsKgPerTkm;TtwEmissionsKgPerTkm;TotalEmissionsKgPerTkm;AverageLitersPer100Tkm
+road;diesel;8;0;kg CO2e / t·km;0.015;0.121;0.136;3.84

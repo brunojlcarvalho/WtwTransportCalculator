@@ -12,23 +12,35 @@ public enum Unit {
     HOURS("h"),
     KG_CO2E_PER_TKM("kg CO2e / t·km"),
     KG_CO2E_PER_TH("kg CO2e / t·h"),
-    KG_CO2E_PER_KWH("kg CO2e / kWh equiv"),
-    UNKNOWN("unknown");
+    KG_CO2E_PER_KWH("kg CO2e / kWh equiv");
 
     private final String symbol;
 
+    /**
+     * Constructor for Unit enum.
+     * 
+     * @param symbol The symbol representing the unit.
+     */
     Unit(String symbol) {
         this.symbol = symbol;
     }
 
+    /**
+     * Gets the symbol representing the unit.
+     * 
+     * @return The symbol of the unit.
+     */
     public String getSymbol() {
         return symbol;
     }
 
+    /**
+     * Parses a string to return the corresponding Unit enum value.
+     * 
+     * @param text The input string representing the unit.
+     * @return The corresponding Unit enum value, or null if not recognized.
+     */
     public static Unit fromString(String text) {
-        if (text == null) {
-            return UNKNOWN;
-        }
         String normalized = text.trim();
 
         for (Unit u : Unit.values()) {
@@ -46,6 +58,6 @@ public enum Unit {
             return KG_CO2E_PER_KWH;
         }
 
-        return UNKNOWN;
+        return null;
     }
 }
