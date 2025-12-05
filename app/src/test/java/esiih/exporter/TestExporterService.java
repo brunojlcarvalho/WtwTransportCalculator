@@ -161,19 +161,13 @@ public class TestExporterService {
     private TransportChain createMockTransportChain() {
         TransportChain chain = new TransportChain();
 
-        TransportOperation to = new TransportOperation("TO1");
-        to.setTransportMode(Mode.ROAD);
-        to.setDistanceLoadedKm(100.0);
-        to.setPayloadTon(10.0);
+        TransportOperation to = new TransportOperation("TO1", Mode.ROAD, "Carro", 100.0, 100.0, 10.0, 28.0, 15, 3.5, FuelType.DIESEL);
         to.setEmissionWTW(50.0);
         to.setEmissionWTT(20.0);
         to.setEmissionTTW(30.0);
         chain.addElement(to);
 
         HubOperation ho = new HubOperation("HO1", Mode.HUB, FuelType.ELECTRICITY, 500.0, 5.0);
-        ho.setEnergySource(FuelType.ELECTRICITY);
-        ho.setDurationHours(5.0);
-        ho.setEnergyConsumed(500.0);
         ho.setEmissionWTW(10.0);
         ho.setEmissionWTT(5.0);
         ho.setEmissionTTW(5.0);

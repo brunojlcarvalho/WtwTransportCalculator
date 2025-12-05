@@ -206,8 +206,7 @@ public class TestCalculatorService {
 
                 calculatorService.calculateGEE(transportChain, emissionFactors);
 
-                assertEquals(to.getEmissionTTW() + to.getEmissionWTT(), to.getEmissionWTW(), 0.01,
-                                "WTW should equal TTW + WTT");
+                assertEquals(to.getEmissionTTW() + to.getEmissionWTT(), to.getEmissionWTW());
         }
 
         /**
@@ -224,9 +223,9 @@ public class TestCalculatorService {
 
                 calculatorService.calculateGEE(transportChain, emissionFactors);
 
-                assertEquals(0.0, ho.getEmissionTTW(), 0.01, "TTW should be 0 for electricity");
-                assertEquals(70.0, ho.getEmissionWTT(), 0.01, "WTT should be 70.0");
-                assertEquals(70.0, ho.getEmissionWTW(), 0.01, "WTW should be 70.0");
+                assertEquals(0.0, ho.getEmissionTTW());
+                assertEquals(70.0, ho.getEmissionWTT());
+                assertEquals(70.0, ho.getEmissionWTW());
         }
 
         /**
@@ -252,8 +251,7 @@ public class TestCalculatorService {
                 calculatorService.calculateGEE(transportChain, emissionFactors);
 
                 double expectedTotalWTW = to.getEmissionWTW() + ho.getEmissionWTW();
-                assertEquals(expectedTotalWTW, transportChain.getTotalWTW(), 0.01,
-                                "Total WTW should equal sum of all element WTW emissions");
+                assertEquals(expectedTotalWTW, transportChain.getTotalWTW());
         }
 
         /**
@@ -273,8 +271,7 @@ public class TestCalculatorService {
 
                 double expectedIntensity = transportChain.getTotalWTW() / 1000.0;
 
-                assertEquals(expectedIntensity, transportChain.getIntensity(), 0.01,
-                                "Intensity should equal totalWTW divided by activity");
+                assertEquals(expectedIntensity, transportChain.getIntensity());
         }
 
         /**
@@ -292,8 +289,7 @@ public class TestCalculatorService {
 
                 calculatorService.calculateGEE(transportChain, emissionFactors);
 
-                assertEquals(0.0, transportChain.getIntensity(), 0.01,
-                                "Intensity should be zero when activity is zero");
+                assertEquals(0.0, transportChain.getIntensity());
         }
 
         /**
@@ -313,9 +309,10 @@ public class TestCalculatorService {
 
                 calculatorService.calculateGEE(transportChain, emissionFactors);
 
-                assertEquals(158.0, to.getEmissionTTW(), 0.01, "TTW should be calculated from consumption");
-                assertEquals(19.0, to.getEmissionWTT(), 0.01, "WTT should be calculated from consumption");
-                assertEquals(177.0, to.getEmissionWTW(), 0.01, "WTW should equal TTW + WTT");
+
+                assertEquals(158.0, to.getEmissionTTW());
+                assertEquals(19.0, to.getEmissionWTT());
+                assertEquals(177.0, to.getEmissionWTW());
         }
 
         /**
@@ -375,9 +372,9 @@ public class TestCalculatorService {
 
                 calculatorService.calculateGEE(transportChain, emissionFactors);
 
-                assertEquals(0.0, to.getEmissionTTW(), 0.01, "TTW should be 0 when capacity is 0");
-                assertEquals(0.0, to.getEmissionWTT(), 0.01, "WTT should be 0 when capacity is 0");
-                assertEquals(0.0, to.getEmissionWTW(), 0.01, "WTW should be 0 when capacity is 0");
+                assertEquals(0.0, to.getEmissionTTW());
+                assertEquals(0.0, to.getEmissionWTT());
+                assertEquals(0.0, to.getEmissionWTW());
         }
 
         /**
@@ -395,9 +392,9 @@ public class TestCalculatorService {
 
                 calculatorService.calculateGEE(transportChain, emissionFactors);
 
-                assertEquals(0.0, ho.getEmissionTTW(), 0.01, "TTW should be 0 when duration is 0");
-                assertEquals(0.0, ho.getEmissionWTT(), 0.01, "WTT should be 0 when duration is 0");
-                assertEquals(0.0, ho.getEmissionWTW(), 0.01, "WTW should be 0 when duration is 0");
+                assertEquals(0.0, ho.getEmissionTTW());
+                assertEquals(0.0, ho.getEmissionWTT());
+                assertEquals(0.0, ho.getEmissionWTW());
         }
 
         /**
@@ -418,7 +415,6 @@ public class TestCalculatorService {
 
                 assertThrows(InvalidCalculationException.class,
                                 () -> calculatorService.calculateGEE(transportChain, emissionFactors));
-
         }
 
         /**
@@ -431,6 +427,5 @@ public class TestCalculatorService {
                         
                 assertThrows(InvalidCalculationException.class,
                                 () -> calculatorService.calculateGEE(chainWithNullElements, emissionFactors));
-
         }
 }
