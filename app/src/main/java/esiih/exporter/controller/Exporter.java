@@ -15,7 +15,7 @@ import esiih.modeler.entity.TransportChainElement;
 import esiih.modeler.entity.TransportOperation;
 
 /**
- * Exporter Implementation.
+ * Exporter Interface Implementation.
  */
 public class Exporter implements ExporterService {
 
@@ -34,6 +34,11 @@ public class Exporter implements ExporterService {
 
     /**
      * Export the transport chain data to a CSV file.
+     * 
+     * @param chain The transport chain to export.
+     * @param filePath The file path to export the CSV.
+     * @throws IOException If an I/O error occurs.
+     * @throws InvalidExportException If export cannot be performed.
      */
     @Override
     public void exportReport(TransportChain chain, String filePath) throws IOException, InvalidExportException {

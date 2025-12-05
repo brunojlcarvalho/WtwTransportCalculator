@@ -14,16 +14,4 @@ public class InvalidPrimaryFormatException extends InvalidParsePrimaryDataExcept
     public InvalidPrimaryFormatException(String message) {
         super(message);
     }
-
-    /**
-     * Constructs a new {@code InvalidPrimaryFormatException} with the specified
-     * detail message and cause.
-     *
-     * @param message the detail message
-     * @param cause the cause (which is saved for later retrieval by the
-     * {@link #getCause()} method)
-     */
-    public InvalidPrimaryFormatException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

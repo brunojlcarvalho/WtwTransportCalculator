@@ -7,19 +7,18 @@ import esiih.modeler.exception.InvalidParsePrimaryDataException;
 import esiih.modeler.exception.InvalidPrimaryFormatException;
 import esiih.modeler.exception.InvalidPrimaryValueException;
 
+/**
+ * ModelHubOperation is responsible for creating HubOperation instances from
+ * CSV data.
+ */
 public class ModelHubOperation {
 
     /**
-     * Builds a {@link HubOperation} instance from a CSV line.
-     *
-     * This method extracts HubOperation-specific values from the CSV (duration,
-     * energy consumption and energy source), validates them individually, and
-     * constructs a fully populated {@link HubOperation} objec
-     *
-     * @param id
-     * @param values
-     * @return
-     * @throws InvalidParsePrimaryDataException
+     * Creates a HubOperation instance from CSV values.
+     * @param id The operation ID.
+     * @param values The CSV row values.
+     * @return The created HubOperation instance.
+     * @throws InvalidParsePrimaryDataException if parsing fails.
      */
     public HubOperation fromCsv(String id, String[] values)
             throws InvalidParsePrimaryDataException {
@@ -40,16 +39,12 @@ public class ModelHubOperation {
 
     }
 
-    // -----------------------------------------------------------------------------
-    // HubOperation
-    // -----------------------------------------------------------------------------
-
     /**
      * Parses and validates the duration field of a HubOperation.
      *
-     * @param raw
-     * @return
-     * @throws InvalidParsePrimaryDataException
+     * @param raw The raw duration string from the CSV.
+     * @return The parsed and validated duration.
+     * @throws InvalidParsePrimaryDataException if the duration value is invalid or cannot be parsed.
      */
     private double parseAndValidateDuration(String raw)
             throws InvalidParsePrimaryDataException {
@@ -70,9 +65,9 @@ public class ModelHubOperation {
     /**
      * Parses and validates the energy consumption field of a HubOperation.
      *
-     * @param raw
-     * @return
-     * @throws InvalidParsePrimaryDataException
+     * @param raw The raw energy consumption string from the CSV.
+     * @return The parsed and validated energy consumption.
+     * @throws InvalidParsePrimaryDataException if the energy consumption value is invalid or cannot be parsed.
      */
     private double parseAndValidateEnergy(String raw)
             throws InvalidParsePrimaryDataException {
@@ -94,9 +89,9 @@ public class ModelHubOperation {
     /**
      * Parses and validates the energy source string for a HubOperation.
      *
-     * @param raw
-     * @return
-     * @throws InvalidParsePrimaryDataException
+     * @param raw The raw energy source string from the CSV.
+     * @return The parsed and validated FuelType.
+     * @throws InvalidParsePrimaryDataException if the energy source value is invalid or cannot be parsed.
      */
     private FuelType parseEnergySource(String raw)
             throws InvalidParsePrimaryDataException {
@@ -116,8 +111,8 @@ public class ModelHubOperation {
     /**
      * Safely parses a numeric string into a double.
      *
-     * @param val
-     * @return
+     * @param val The raw numeric string.
+     * @return The parsed double value.
      */
     private double parseDouble(String val) {
         if (val == null || val.trim().isEmpty()) {

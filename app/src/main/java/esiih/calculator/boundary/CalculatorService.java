@@ -18,6 +18,7 @@ public interface CalculatorService {
      * @param transportChain The transport chain to calculate.
      * @param emissionFactors The list of reference emission factors (secondary
      * data).
+     * @throws InvalidCalculationException If calculation cannot be performed.
      */
     void calculateGEE(TransportChain transportChain, List<EmissionFactor> emissionFactors) throws InvalidCalculationException;
 }

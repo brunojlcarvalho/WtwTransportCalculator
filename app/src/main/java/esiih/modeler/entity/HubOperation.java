@@ -32,6 +32,8 @@ public class HubOperation extends TransportChainElement {
 
     /**
      * Gets the hub mode of the operation.
+     * 
+     * @return The hub mode.
      */
     public Mode getHubMode() {
         return hubMode;
@@ -39,6 +41,8 @@ public class HubOperation extends TransportChainElement {
 
     /**
      * Sets the hub mode of the operation.
+     * 
+     * @param hubMode The hub mode to set.
      */
     public void setHubMode(Mode hubMode) {
         this.hubMode = hubMode;
@@ -46,6 +50,8 @@ public class HubOperation extends TransportChainElement {
 
     /**
      * Gets the energy source of the operation.
+     * 
+     * @return The energy source.
      */
     public FuelType getEnergySource() {
         return energySource;
@@ -53,6 +59,8 @@ public class HubOperation extends TransportChainElement {
 
     /**
      * Sets the energy source of the operation.
+     * 
+     * @param energySource The energy source to set.
      */
     public void setEnergySource(FuelType energySource) {
         this.energySource = energySource;
@@ -60,6 +68,8 @@ public class HubOperation extends TransportChainElement {
 
     /**
      * Gets the energy consumed during the operation.
+     * 
+     * @return The energy consumed.
      */
     public double getEnergyConsumed() {
         return energyConsumed;
@@ -67,6 +77,8 @@ public class HubOperation extends TransportChainElement {
 
     /**
      * Sets the energy consumed during the operation.
+     * 
+     * @param energyConsumed The energy consumed to set.
      */
     public void setEnergyConsumed(double energyConsumed) {
         this.energyConsumed = energyConsumed;
@@ -74,6 +86,8 @@ public class HubOperation extends TransportChainElement {
 
     /**
      * Gets the duration of the operation in hours.
+     * 
+     * @return The duration in hours.
      */
     public double getDurationHours() {
         return durationHours;
@@ -81,6 +95,8 @@ public class HubOperation extends TransportChainElement {
 
     /**
      * Sets the duration of the operation in hours.
+     * 
+     * @param durationHours The duration in hours to set.
      */
     public void setDurationHours(double durationHours) {
         this.durationHours = durationHours;

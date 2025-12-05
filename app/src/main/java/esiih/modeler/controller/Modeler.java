@@ -7,10 +7,8 @@ import esiih.importer.entity.ParsedPrimaryData;
 import esiih.importer.entity.ParsedSecondaryData;
 import esiih.modeler.boundary.ModelerService;
 import esiih.modeler.entity.EmissionFactor;
-import esiih.modeler.entity.HubOperation;
 import esiih.modeler.entity.TransportChain;
 import esiih.modeler.entity.TransportChainElement;
-import esiih.modeler.entity.TransportOperation;
 import esiih.modeler.exception.InvalidParsePrimaryDataException;
 import esiih.modeler.exception.InvalidParsedSecondaryDataException;
 
@@ -62,13 +60,11 @@ public class Modeler implements ModelerService {
     }
 
     /**
-     * Validates the state of the {@link ParsedPrimaryData} instance before
-     * processing it. Ensures the object is not null and that its content is
-     * non-empty.
+     * Validates the parsed primary CSV wrapper to ensure it contains usable
+     * data.
      *
-     * @param parsedData the parsed primary data to validate
-     * @throws InvalidParsePrimaryDataException if the parsed data is null or
-     *                                          its content is empty
+     * @param parsedData
+     * @throws InvalidParsePrimaryDataException
      */
     private void validateParsedData(ParsedPrimaryData parsedData)
             throws InvalidParsePrimaryDataException {
@@ -86,16 +82,15 @@ public class Modeler implements ModelerService {
     }
 
     /**
-     * Creates the correct {@link TransportChainElement} subtype based on the
-     * CSV Operacao type. "TO" produces a {@link TransportOperation} and "HO"
-     * produces a {@link HubOperation}.
+     * Creates a TransportChainElement instance from the provided CSV values.
      *
-     * @param id         the element ID
-     * @param type       the element type ("TO" or "HO")
-     * @param values     the CSV values for the element
-     * @param lineNumber the line number in the CSV file (for error reporting)
-     * @return the created TransportChainElement
-     * @throws InvalidParsePrimaryDataException if parsing fails
+     * @param id The element ID.
+     * @param type The element type ("TO" for TransportOperation, "HO" for
+     * HubOperation).
+     * @param values The CSV row values.
+     * @param lineNumber The line number in the CSV file.
+     * @return The created TransportChainElement.
+     * @throws InvalidParsePrimaryDataException
      */
     private TransportChainElement createElementFromValues(String id, String type, String[] values, int lineNumber)
             throws InvalidParsePrimaryDataException {
@@ -144,9 +139,8 @@ public class Modeler implements ModelerService {
      * Validates the parsed secondary CSV wrapper to ensure it contains usable
      * data.
      *
-     * @param parsedData the parsed secondary data to validate
-     * @throws InvalidParsedSecondaryDataException if the parsed data is null or
-     *                                             its content is empty
+     * @param parsedData The parsed secondary data to validate.
+     * @throws InvalidParsedSecondaryDataException if validation fails.
      */
     private void validateParsedSecondaryData(ParsedSecondaryData parsedData)
             throws InvalidParsedSecondaryDataException {
