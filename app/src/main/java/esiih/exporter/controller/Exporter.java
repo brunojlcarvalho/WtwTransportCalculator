@@ -1,6 +1,7 @@
 package esiih.exporter.controller;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
@@ -44,6 +45,11 @@ public class Exporter implements ExporterService {
             throw new InvalidExportException("Error: NULL transport chain.");
         }
 
+        File file = new File(filePath);
+        if (file.getParentFile() != null && !file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
+
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
 
             writer.write(HEADER);
@@ -81,7 +87,8 @@ public class Exporter implements ExporterService {
                     sb.append(info).append(SEP);
 
                 } else {
-                    throw new InvalidExportException("Error: Unknown element type encountered: " + element.getClass().getName());
+                    throw new InvalidExportException(
+                            "Error: Unknown element type encountered: " + element.getClass().getName());
                 }
 
                 sb.append(String.format(Locale.ROOT, "%.2f", element.getEmissionWTW())).append(SEP);
@@ -95,7 +102,6 @@ public class Exporter implements ExporterService {
                 writer.write(NEW_LINE);
             }
 
-            System.out.println("Transport Chain exported successfully to " + filePath);
         } catch (IOException e) {
             throw new IOException("Error creating the file: " + filePath, e);
         } catch (Exception e) {
