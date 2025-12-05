@@ -3,6 +3,7 @@ image: gradle:8.4-jdk17
 stages:
   - build
   - test
+  - metrics
 
 before_script:
   - echo "Start Automated Build"
@@ -45,6 +46,19 @@ test_white_box:
   artifacts:
     paths:
       - build/reports/jacoco*
+
+pmd_analysis:
+  stage: metrics
+  tags:
+    - docker-runner
+  script:
+    - ./gradlew pmdMain pmdTest  
+  artifacts:
+    name: "pmd-report"
+    paths:
+      - build/reports/pmd/       
+    when: always                 
+    expire_in: 1 week
 
 after_script:
   - echo "End Automated Build"
