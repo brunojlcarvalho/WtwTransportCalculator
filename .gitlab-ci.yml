@@ -2,8 +2,8 @@ image: gradle:8.4-jdk17
 
 stages:
   - build
-  - test
   - metrics
+  - test
 
 before_script:
   - echo "Start Automated Build"
